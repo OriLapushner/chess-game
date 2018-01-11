@@ -1,6 +1,7 @@
 
 <template>
 <section>
+  <button @click="startGame">start game</button>
 <h1>HOME PAGE!!!</h1>
 <chess-board></chess-board>
     </section>
@@ -8,7 +9,7 @@
 
 <script>
 "use strict";
-import chessBoard from '../components/chessBoard'
+import chessBoard from '../components/ChessBoard'
 export default {
   name: "HomePage",
   data() {
@@ -19,15 +20,11 @@ export default {
   created() {      
   },
   computed:{
-    // isLogged(){
-    //   // return this.$store.state.user.isLogged
-      
-    // }
   },
   methods: {
-    // logout(){
-    //   this.$store.commit('setUser',{user: null})
-    // }
+    startGame(){
+      if(this.$store.state.game.turn === null) this.$store.commit('setPlayerTurn','white')
+    }
   },
   components: {
     chessBoard

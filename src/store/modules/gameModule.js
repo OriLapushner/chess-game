@@ -1,6 +1,9 @@
 export default {
     state: {
-        board: []
+        board: [],
+        turn: null,
+        selected:null,
+        avaibleMoves: []
     },
            
     getters: {
@@ -8,10 +11,19 @@ export default {
     },
     mutations: {
         setBoard(state, board) {
-            console.log(board)
             state.board = board
+        },
+        setPlayerTurn(state,player){
+            state.turn = player
+        },
+        setSelected(state, piece){
+            console.log('updating selected to:',piece)
+            state.selected = piece
+        },
+        setAvaibleMoves(state,moves){
+            state.avaibleMoves.push(moves)
         }
-
+        
     },
     actions: {
     //     login({ commit }, userInfo) {

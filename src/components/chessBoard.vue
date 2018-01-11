@@ -1,6 +1,7 @@
 <template>
   <section class="chess-board">
-            <board-square v-for="(square,idx) in board" class="board-square" :square="square" :key="idx">
+            <board-square v-for="(square,idx) in board" class="board-square"
+             :square="square" :key="idx">
 
             </board-square>
 
@@ -9,26 +10,26 @@
 </template>
 
 <script>
-import chessService from '../services/chessService.js'
-import boardSquare from "./boardSquare";
+import chessService from "../services/chessService.js";
+import boardSquare from "./BoardSquare";
 export default {
   name: "chessBoard",
   components: {
     boardSquare
   },
-  created(){
-    var board = chessService.getNewBoard()
-    this.$store.commit('setBoard',board)
+  created() {
+    var board = chessService.getNewBoard();
+    this.$store.commit("setBoard", board);
   },
-    computed:{
-        board(){
-            return this.$store.state.game.board
-        }
-    },
+  computed: {
+    board() {
+      return this.$store.state.game.board;
+    }
+  },
   methods: {
-      printBoard(){
-          console.log(this.board)
-      }
+    printBoard() {
+      console.log(this.board);
+    }
   }
 };
 </script>
@@ -38,8 +39,8 @@ export default {
   margin: 0;
   border: none;
   margin: auto;
-  width: 50px;
-  height: 50px;
+  width: 12.5%;
+  height: 12.5%;
 }
 .chess-board {
   flex-wrap: wrap;
