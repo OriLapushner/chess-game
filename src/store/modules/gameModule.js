@@ -3,7 +3,7 @@ export default {
         board: [],
         turn: null,
         selected:null,
-        avaibleMoves: []
+        validMoves:[]
     },
            
     getters: {
@@ -17,11 +17,23 @@ export default {
             state.turn = player
         },
         setSelected(state, piece){
-            console.log('updating selected to:',piece)
             state.selected = piece
         },
-        setAvaibleMoves(state,moves){
-            state.avaibleMoves.push(moves)
+        setValidMoves(state,moves){
+            for (let i = 0; i < moves.length; i++) {
+                state.board[moves[i]].isValidMove = true
+                
+            }
+            state.validMoves.push(...moves)
+        },
+        setPiece(state,info){
+            state.board[info.coordsStr].piece = info.piece
+        },
+        removeValidMoves(state){
+            state.validMoves.forEach(coordsStr => {
+                state.board[coordsStr].isValidMove = false
+            });
+            state.validMoves = []
         }
         
     },

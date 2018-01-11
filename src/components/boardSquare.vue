@@ -17,17 +17,12 @@ computed: {
       var strCoords = this.square.coords.i + '-' + this.square.coords.j
     return strCoords === this.$store.state.game.selected
   },
-  isAvaibleMove(){
-        var strCoords = this.square.coords.i + '-' + this.square.coords.j
-        var res = this.$store.state.game.avaibleMoves.indexOf(strCoords)
-        return (res !== -1)
-  },
   classes(){
     return {
       [this.square.color]: true,
       [this.square.piece]: true,
       selected: this.isSelected,
-      'avaible-move': this.isAvaibleMove
+      'valid-move': this.square.isValidMove
     }
   }
 },
@@ -46,7 +41,7 @@ methods: {
 .black {
   background: rgb(105, 167, 102)
 }
-.avaible-move{
+.valid-move{
   background: yellow;
 }
 .selected {
