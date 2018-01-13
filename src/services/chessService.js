@@ -1,5 +1,5 @@
 import store from '../store/store.js'
-
+const GAME = store.state.game
 function getNewBoard() {
     var board = {};
     for (let i = 0; i < 8; i++) {
@@ -87,6 +87,7 @@ function getPieceLoc(i, j) {
 }
 
 function squareClicked(square) {
+    console.log('clicked square: ', square.coords.i + '-' + square.coords.j)
     if (store.state.game.selected === null) {
         if (store.state.game.turn[0] === square.piece[0]) {
             var coordsStr = getCoordsStr(square.coords)
@@ -114,21 +115,28 @@ function squareClicked(square) {
 
 function getPossibleMoves(square) {
     var moves = []
-    if (square.piece === 'white pawn' || 'black pawn') {
-        moves = getPawnMoves(square)
+    if (square.piece === 'white-pawn' || square.piece === 'black-pawn') {
+        moves.push(...getPawnMoves(square))
+    } else if (square.piece === 'black-rook' || square.piece === 'white-rook') {
+        moves.push(...getRookMoves(square))
+    } else if (square.piece === 'black-bishop' || square.piece === 'white-bishop') {
+        moves.push(...getBishopMoves(square))
     }
-    //     else if(piece === 'black rook' || piece === 'white rook'){
-    //             moves = getRookMoves(piece)
+    // } else if (square.piece === 'black-queen' || square.piece === 'white-queen') {
+    //     moves.push(...getBishopMoves(square), ...getRookMoves(square))
+    //     // moves.push()
     // }
-    store.commit('setValidMoves', moves)
+
+
+        store.commit('setValidMoves', moves)
     return moves
 }
 function getPawnMoves(square) {
-    // console.log('piece from pawn moves: ', square)
     var coordsStr
     var moves = []
     var direction = square.piece[0] === 'w' ? 1 : -1;
     var isValid = checkValidIndex(square.coords.i + direction, square.coords.j)
+    console.log(isValid)
     if (isValid) {
         coordsStr = square.coords.i + direction + '-' + square.coords.j
         if (store.state.game.board[coordsStr].piece === 'empty') {
@@ -143,33 +151,71 @@ function getPawnMoves(square) {
             }
         }
     }
-    isValid = checkValidIndex(square.coords.i + direction,square.coords.j + 1)
-    if(isValid){
-    coordsStr = getCoordsStr({ i: square.coords.i + direction, j: square.coords.j + 1 })
-    if (store.state.game.board[coordsStr].piece[0] !== square.piece[0] &&
-        store.state.game.board[coordsStr].piece !== 'empty') moves.push(coordsStr)
+    isValid = checkValidIndex(square.coords.i + direction, square.coords.j + 1)
+    if (isValid) {
+        coordsStr = getCoordsStr({ i: square.coords.i + direction, j: square.coords.j + 1 })
+        if (store.state.game.board[coordsStr].piece[0] !== square.piece[0] &&
+            store.state.game.board[coordsStr].piece !== 'empty') moves.push(coordsStr)
     }
-    isValid = checkValidIndex(square.coords.i + direction,square.coords.j - 1)
-    if(isValid){
-    coordsStr = getCoordsStr({ i: square.coords.i + direction, j: square.coords.j - 1 })
-    if (store.state.game.board[coordsStr].piece[0] !== square.piece[0] &&
-        store.state.game.board[coordsStr].piece !== 'empty') moves.push(coordsStr)
+    isValid = checkValidIndex(square.coords.i + direction, square.coords.j - 1)
+    if (isValid) {
+        coordsStr = getCoordsStr({ i: square.coords.i + direction, j: square.coords.j - 1 })
+        if (store.state.game.board[coordsStr].piece[0] !== square.piece[0] &&
+            store.state.game.board[coordsStr].piece !== 'empty') moves.push(coordsStr)
     }
     return moves
 }
 
-function getRookMoves(piece) {
+function getRookMoves(square) {
     var moves = []
-    for (let i = 0; i < 8; i++) {
-        if (piece.coords.i === i) continue
-        var coordsStr = i + '-' + j
-        if (store.state.game.board[coordsStr].piece[0] === piece[0]) {
-            break;
-        }
-        moves.push(coordsStr)
-    }
-    for (let i = 0; i < 8; i++) {
-        const element = array[i];
+    var top = getDirectionMove(square, 1, 0)
+    moves.push(...top)
+    var bot = getDirectionMove(square, -1, 0)
+    moves.push(...bot)
+    var right = getDirectionMove(square, 0, 1)
+    moves.push(...right)
+    var left = getDirectionMove(square, 0, 1)
+    moves.push(...left)
+    return moves
+
+}
+function getBishopMoves(square) {
+    var moves = []
+    var topLeft = getDirectionMove(square, -1, -1)
+    moves.push(...topLeft)
+    var topRight = getDirectionMove(square, -1, 1)
+    moves.push(...topRight)
+    var botRight = getDirectionMove(square, 1, 1)
+    moves.push(...botRight)
+    var botLeft = getDirectionMove(square, 1, -1)
+    moves.push(...botLeft)
+    return moves
+}
+
+function getDirectionMove(square, iModifier, jModifier) {
+    var moves = []
+    var isActive = true
+    var coordsStr
+    var isValid
+    while (isActive) {
+        isValid = checkValidIndex(square.coords.i + iModifier, square.coords.j + jModifier)
+        if (isValid) {
+            coordsStr = getCoordsStr({ i: square.coords.i + iModifier, j: square.coords.j + jModifier })
+            if (store.state.game.board[coordsStr].piece[0] === square.piece[0]) {
+                // console.log('adding move: ', coordsStr)
+                isActive = false
+
+            } else if (store.state.game.board[coordsStr].piece !== 'empty') {
+                isActive = false
+                moves.push(coordsStr)
+                // console.log('stopped due to encounter')
+            } else moves.push(coordsStr)
+        } else isActive = false
+
+        if (iModifier < 0) iModifier--
+        else if (iModifier > 0) iModifier++
+        if (jModifier < 0) jModifier--
+        else if (jModifier > 0) jModifier++
     }
     return moves
 }
@@ -202,9 +248,8 @@ function changePlayerTurn() {
 }
 
 function checkValidIndex(i, j) {
-    if (i < 0 || i > 8 ||
-        j < 0 || j > 8) return false
-    return true
+    return (i >= 0 && i < 8 && j >= 0 && j < 8)
+
 }
 
 export default {
