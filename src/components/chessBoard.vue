@@ -13,7 +13,7 @@
 import chessService from "../services/chessService.js";
 import boardSquare from "./BoardSquare";
 export default {
-  name: "chessBoard",
+  name: "ChessBoard",
   components: {
     boardSquare
   },

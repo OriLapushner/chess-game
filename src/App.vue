@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <nav-bar></nav-bar>
-    <h1> APP PAGE!!!</h1>
     <div class="space-container">
 
       <router-view/>
@@ -20,5 +19,8 @@ export default {
 </script>
 
 <style>
-
+#app{
+  background: rgba(21, 24, 29, 0.733);
+}
 </style>
+

@@ -1,5 +1,5 @@
 import store from '../store/store.js'
-const GAME = store.state.game
+const game = store.state.game
 function getNewBoard() {
     var board = {};
     for (let i = 0; i < 8; i++) {
@@ -88,8 +88,8 @@ function getPieceLoc(i, j) {
 
 function squareClicked(square) {
     console.log('clicked square: ', square.coords.i + '-' + square.coords.j)
-    if (store.state.game.selected === null) {
-        if (store.state.game.turn[0] === square.piece[0]) {
+    if (game.selected === null) {
+        if (game.turn[0] === square.piece[0]) {
             var coordsStr = getCoordsStr(square.coords)
             store.commit('setSelected', coordsStr)
             var possibleMoves = getPossibleMoves(square)
@@ -98,7 +98,7 @@ function squareClicked(square) {
         }
     }
     else {
-        var validMoves = store.state.game.validMoves
+        var validMoves = game.validMoves
         var coordsStr = getCoordsStr(square.coords)
         for (let i = 0; i < validMoves.length; i++) {
             if (coordsStr === validMoves[i]) {
@@ -116,52 +116,55 @@ function squareClicked(square) {
 function getPossibleMoves(square) {
     var moves = []
     if (square.piece === 'white-pawn' || square.piece === 'black-pawn') {
-        moves.push(...getPawnMoves(square))
+        moves = getPawnMoves(square)
     } else if (square.piece === 'black-rook' || square.piece === 'white-rook') {
-        moves.push(...getRookMoves(square))
+        moves = getRookMoves(square)
     } else if (square.piece === 'black-bishop' || square.piece === 'white-bishop') {
-        moves.push(...getBishopMoves(square))
+        moves = getBishopMoves(square)
+    } else if (square.piece === 'black-queen' || square.piece === 'white-queen') {
+        moves.push(...getBishopMoves(square), ...getRookMoves(square))
+        // moves.push()
     }
-    // } else if (square.piece === 'black-queen' || square.piece === 'white-queen') {
-    //     moves.push(...getBishopMoves(square), ...getRookMoves(square))
-    //     // moves.push()
-    // }
-
-
-        store.commit('setValidMoves', moves)
+    else if (square.piece === 'black-knight' || square.piece === 'white-knight'){
+        moves = getKnightMoves(square)
+    }
+    else if (square.piece === 'black-king' || square.piece === 'white-king'){
+        moves = getKingMoves(square)
+    }
+    store.commit('setValidMoves', moves)
     return moves
 }
 function getPawnMoves(square) {
     var coordsStr
     var moves = []
     var direction = square.piece[0] === 'w' ? 1 : -1;
-    var isValid = checkValidIndex(square.coords.i + direction, square.coords.j)
+    var isValid = isValidIndex(square.coords.i + direction, square.coords.j)
     console.log(isValid)
     if (isValid) {
         coordsStr = square.coords.i + direction + '-' + square.coords.j
-        if (store.state.game.board[coordsStr].piece === 'empty') {
+        if (game.board[coordsStr].piece === 'empty') {
             moves.push(coordsStr)
             coordsStr = square.coords.i + 2 * direction + '-' + square.coords.j
-            isValid = checkValidIndex(square.coords.i + 2 * direction, square.coords.j)
+            isValid = isValidIndex(square.coords.i + 2 * direction, square.coords.j)
             if (isValid) {
-                if (store.state.game.board[coordsStr].piece === 'empty') {
+                if (game.board[coordsStr].piece === 'empty') {
                     if (direction === 1 && square.coords.i === 1) moves.push(coordsStr)
                     else if (direction === -1 && square.coords.i === 6) moves.push(coordsStr)
                 }
             }
         }
     }
-    isValid = checkValidIndex(square.coords.i + direction, square.coords.j + 1)
+    isValid = isValidIndex(square.coords.i + direction, square.coords.j + 1)
     if (isValid) {
         coordsStr = getCoordsStr({ i: square.coords.i + direction, j: square.coords.j + 1 })
-        if (store.state.game.board[coordsStr].piece[0] !== square.piece[0] &&
-            store.state.game.board[coordsStr].piece !== 'empty') moves.push(coordsStr)
+        if (game.board[coordsStr].piece[0] !== square.piece[0] &&
+            game.board[coordsStr].piece !== 'empty') moves.push(coordsStr)
     }
-    isValid = checkValidIndex(square.coords.i + direction, square.coords.j - 1)
+    isValid = isValidIndex(square.coords.i + direction, square.coords.j - 1)
     if (isValid) {
         coordsStr = getCoordsStr({ i: square.coords.i + direction, j: square.coords.j - 1 })
-        if (store.state.game.board[coordsStr].piece[0] !== square.piece[0] &&
-            store.state.game.board[coordsStr].piece !== 'empty') moves.push(coordsStr)
+        if (game.board[coordsStr].piece[0] !== square.piece[0] &&
+            game.board[coordsStr].piece !== 'empty') moves.push(coordsStr)
     }
     return moves
 }
@@ -174,7 +177,7 @@ function getRookMoves(square) {
     moves.push(...bot)
     var right = getDirectionMove(square, 0, 1)
     moves.push(...right)
-    var left = getDirectionMove(square, 0, 1)
+    var left = getDirectionMove(square, 0, -1)
     moves.push(...left)
     return moves
 
@@ -198,14 +201,14 @@ function getDirectionMove(square, iModifier, jModifier) {
     var coordsStr
     var isValid
     while (isActive) {
-        isValid = checkValidIndex(square.coords.i + iModifier, square.coords.j + jModifier)
+        isValid = isValidIndex(square.coords.i + iModifier, square.coords.j + jModifier)
         if (isValid) {
             coordsStr = getCoordsStr({ i: square.coords.i + iModifier, j: square.coords.j + jModifier })
-            if (store.state.game.board[coordsStr].piece[0] === square.piece[0]) {
+            if (game.board[coordsStr].piece[0] === square.piece[0]) {
                 // console.log('adding move: ', coordsStr)
                 isActive = false
 
-            } else if (store.state.game.board[coordsStr].piece !== 'empty') {
+            } else if (game.board[coordsStr].piece !== 'empty') {
                 isActive = false
                 moves.push(coordsStr)
                 // console.log('stopped due to encounter')
@@ -220,9 +223,45 @@ function getDirectionMove(square, iModifier, jModifier) {
     return moves
 }
 
+function getKnightMoves(square){
+    var moves = []
+    // console.log('knight at i:',square.coords.i,'j:',square.coords.j)
+    for (let i = square.coords.i - 2; i < square.coords.i + 3; i++) {
+        for (let j = square.coords.j - 2; j < square.coords.j + 3; j++) {
+            if (!isValidIndex(i,j)) continue;
+            var coordsStr = getCoordsStr({i,j})
+            // console.log(game.board[coordsStr].piece[0])
+            if (game.board[coordsStr].piece[0] === square.piece[0]) continue
+            var iDistance = Math.abs(square.coords.i - i)
+            var jDistance = Math.abs(square.coords.j - j)
+            if((iDistance  === 2 && jDistance === 1) ||
+               (iDistance  === 1 && jDistance === 2)) moves.push(coordsStr)
+            
+        }
+        
+    }
+    return moves
+}
+
+function getKingMoves(square){
+    var moves = []
+    for (let i = square.coords.i - 1; i < square.coords.i + 2; i++) {
+        for (let j = square.coords.j - 1; j < square.coords.j + 2; j++) {
+            if(!isValidIndex(i,j)) continue
+            if(i === square.coords.i && j === square.coords.j) continue
+            var coordsStr = getCoordsStr({i,j})
+            if(square.piece[0] === game.board[coordsStr].piece[0]) continue
+            moves.push(coordsStr)
+            
+        }
+        
+    }
+    return moves
+}
+
 function moveTo(coordsStr) {
-    var toRemove = store.state.game.selected
-    var pieceToMove = store.state.game.board[toRemove].piece
+    var toRemove = game.selected
+    var pieceToMove = game.board[toRemove].piece
     // console.log('to remove: ',toRemove)
     store.commit('setPiece', { piece: 'empty', coordsStr: toRemove })
     store.commit('setPiece', { piece: pieceToMove, coordsStr })
@@ -233,7 +272,7 @@ function moveTo(coordsStr) {
 
 // function getPieceVal(i,j){
 //     var coordsStr = getCoordsStr({i,j})
-//     return store.state.game.board[coordsStr].piece
+//     return game.board[coordsStr].piece
 // }
 
 function getCoordsStr(coords) {
@@ -241,13 +280,13 @@ function getCoordsStr(coords) {
 }
 
 function changePlayerTurn() {
-    var player = store.state.game.turn === 'white' ? 'black' : 'white'
+    var player = game.turn === 'white' ? 'black' : 'white'
 
     store.commit('setPlayerTurn', player)
 
 }
 
-function checkValidIndex(i, j) {
+function isValidIndex(i, j) {
     return (i >= 0 && i < 8 && j >= 0 && j < 8)
 
 }

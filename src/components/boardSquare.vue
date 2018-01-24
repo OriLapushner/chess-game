@@ -9,7 +9,7 @@
 <script>
 import chessService from '../services/chessService.js'
 export default {
-  name: 'boardSquare',
+  name: 'BoardSquare',
   props: ['square'],
 computed: {
     isSelected(){
@@ -42,46 +42,46 @@ methods: {
   background: rgb(105, 167, 102)
 }
 .valid-move{
-  background: yellow;
+  opacity: 0.5;
 }
 .selected {
           background:black;
 }
 .white-pawn{
-background-image: url("../imgs/w-pawn.png")
+background-image: url("../imgs/pieces/w-pawn.png")
 }
 .white-rook{
-background-image: url("../imgs/w-rook.png")
+background-image: url("../imgs/pieces/w-rook.png")
 }
 .white-knight{
-background-image: url("../imgs/w-knight.png")
+background-image: url("../imgs/pieces/w-knight.png")
 }
 .white-bishop{
-background-image: url("../imgs/w-bishop.png")
+background-image: url("../imgs/pieces/w-bishop.png")
 }
 .white-queen{
-background-image: url("../imgs/w-queen.png")
+background-image: url("../imgs/pieces/w-queen.png")
 }
 .white-king{
-background-image: url("../imgs/w-king.png")
+background-image: url("../imgs/pieces/w-king.png")
 }
 .black-pawn{
-background-image: url("../imgs/b-pawn.png")
+background-image: url("../imgs/pieces/b-pawn.png")
 }
 .black-rook{
-background-image: url("../imgs/b-rook.png")
+background-image: url("../imgs/pieces/b-rook.png")
 }
 .black-knight{
-background-image: url("../imgs/b-knight.png")
+background-image: url("../imgs/pieces/b-knight.png")
 }
 .black-bishop{
-background-image: url("../imgs/b-bishop.png")
+background-image: url("../imgs/pieces/b-bishop.png")
 }
 .black-queen{
-background-image: url("../imgs/b-queen.png")
+background-image: url("../imgs/pieces/b-queen.png")
 }
 .black-king{
-background-image: url("../imgs/b-king.png")
+background-image: url("../imgs/pieces/b-king.png")
 }
 </style>
 
