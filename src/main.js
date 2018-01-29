@@ -9,7 +9,8 @@ import myStore from './store/store.js'
 import VueSocketio from 'vue-socket.io';
 
 //activate to use server:
-// Vue.use(VueSocketio, 'http://localhost:3003');
+Vue.use(VueSocketio, 'http://localhost:3003')
+
 
 Vue.config.productionTip = false
 
@@ -19,7 +20,11 @@ new Vue({
   template: '<App/>',
   components: { App },
   store: myStore,
-  // sockets: {
+  sockets: {
+            gameFound(gameData){
+              console.log('game has been found',gameData)
+              this.$store.commit('joinGame',gameData)
+            }
     
-  //   }
+    }
 })

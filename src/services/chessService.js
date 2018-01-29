@@ -17,7 +17,6 @@ function getNewBoard() {
                 }
             }
             board[i + '-' + j] = square
-
         }
 
     }
@@ -125,10 +124,10 @@ function getPossibleMoves(square) {
         moves.push(...getBishopMoves(square), ...getRookMoves(square))
         // moves.push()
     }
-    else if (square.piece === 'black-knight' || square.piece === 'white-knight'){
+    else if (square.piece === 'black-knight' || square.piece === 'white-knight') {
         moves = getKnightMoves(square)
     }
-    else if (square.piece === 'black-king' || square.piece === 'white-king'){
+    else if (square.piece === 'black-king' || square.piece === 'white-king') {
         moves = getKingMoves(square)
     }
     store.commit('setValidMoves', moves)
@@ -223,43 +222,47 @@ function getDirectionMove(square, iModifier, jModifier) {
     return moves
 }
 
-function getKnightMoves(square){
+function getKnightMoves(square) {
     var moves = []
     // console.log('knight at i:',square.coords.i,'j:',square.coords.j)
     for (let i = square.coords.i - 2; i < square.coords.i + 3; i++) {
         for (let j = square.coords.j - 2; j < square.coords.j + 3; j++) {
-            if (!isValidIndex(i,j)) continue;
-            var coordsStr = getCoordsStr({i,j})
+            if (!isValidIndex(i, j)) continue;
+            var coordsStr = getCoordsStr({ i, j })
             // console.log(game.board[coordsStr].piece[0])
             if (game.board[coordsStr].piece[0] === square.piece[0]) continue
             var iDistance = Math.abs(square.coords.i - i)
             var jDistance = Math.abs(square.coords.j - j)
-            if((iDistance  === 2 && jDistance === 1) ||
-               (iDistance  === 1 && jDistance === 2)) moves.push(coordsStr)
-            
+            if ((iDistance === 2 && jDistance === 1) ||
+                (iDistance === 1 && jDistance === 2)) moves.push(coordsStr)
+
         }
-        
+
     }
     return moves
 }
 
-function getKingMoves(square){
+function getKingMoves(square) {
     var moves = []
     for (let i = square.coords.i - 1; i < square.coords.i + 2; i++) {
         for (let j = square.coords.j - 1; j < square.coords.j + 2; j++) {
-            if(!isValidIndex(i,j)) continue
-            if(i === square.coords.i && j === square.coords.j) continue
-            var coordsStr = getCoordsStr({i,j})
-            if(square.piece[0] === game.board[coordsStr].piece[0]) continue
+            if (!isValidIndex(i, j)) continue
+            if (i === square.coords.i && j === square.coords.j) continue
+            var coordsStr = getCoordsStr({ i, j })
+            if (square.piece[0] === game.board[coordsStr].piece[0]) continue
             moves.push(coordsStr)
-            
+
         }
-        
+
     }
     return moves
 }
 
 function moveTo(coordsStr) {
+    //check if online or offline
+    if (game.gameId) {
+        store.commit('sendMoveToServer', { gameId, moveFrom: game.selected, moveTo: coordsStr })
+    }
     var toRemove = game.selected
     var pieceToMove = game.board[toRemove].piece
     // console.log('to remove: ',toRemove)

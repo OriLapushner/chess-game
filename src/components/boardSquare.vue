@@ -16,7 +16,7 @@ computed: {
       if(!this.square) return false;
       var strCoords = this.square.coords.i + '-' + this.square.coords.j
     return strCoords === this.$store.state.game.selected
-  },
+  },  
   classes(){
     return {
       [this.square.color]: true,

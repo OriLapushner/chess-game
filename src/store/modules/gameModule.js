@@ -1,9 +1,13 @@
 export default {
     state: {
         board: [],
+        gameId: null,
         turn: null,
+        playerColor: null,
         selected:null,
-        validMoves:[]
+        validMoves:[],
+        msgToPlayer: '',
+        playerColor: null
     },
            
     getters: {
@@ -34,7 +38,13 @@ export default {
                 state.board[coordsStr].isValidMove = false
             });
             state.validMoves = []
-        }
+        },
+        joinGame(state,gameInfo){
+            console.log(gameInfo)
+            state.playerColor = gameInfo.color
+            state.gameId = gameInfo.gameId
+            state.msgToPlayer = 'your turn'
+        },
         
     },
     actions: {
