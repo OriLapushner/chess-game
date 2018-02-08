@@ -1,4 +1,8 @@
 import store from '../store/store.js'
+import io from 'socket.io-client';
+const socket = io('http://localhost:3003/')
+
+
 const game = store.state.game
 function getNewBoard() {
     var board = {};
@@ -18,7 +22,6 @@ function getNewBoard() {
             }
             board[i + '-' + j] = square
         }
-
     }
     return board
 }
@@ -86,30 +89,38 @@ function getPieceLoc(i, j) {
 }
 
 function squareClicked(square) {
-    console.log('clicked square: ', square.coords.i + '-' + square.coords.j)
-    if (game.selected === null) {
-        if (game.turn[0] === square.piece[0]) {
-            var coordsStr = getCoordsStr(square.coords)
-            store.commit('setSelected', coordsStr)
-            var possibleMoves = getPossibleMoves(square)
-            // console.log('possible moves: ', possibleMoves)
-
-        }
-    }
-    else {
-        var validMoves = game.validMoves
-        var coordsStr = getCoordsStr(square.coords)
-        for (let i = 0; i < validMoves.length; i++) {
-            if (coordsStr === validMoves[i]) {
-                moveTo(coordsStr)
-                changePlayerTurn()
-                return
+    var coordsStr = getCoordsStr(square.coords)
+    // console.log('clicked square: ', coordsStr)
+    // console.log('game.turn: ', game.turn)
+    if (game.isOnline) {
+        if (game.selected === null && game.turn[0] === square.piece[0] &&
+            game.turn === game.playerColor) setSelected(square)
+        else {
+            var isValid = isValidMove(coordsStr)
+            if (isValid) {
+                console.log('selected: ', game.selected, 'coords str', coordsStr)
+                sendServerMove(game.selected, coordsStr)
+                moveFromTo(game.selected, coordsStr)
+            }
+            else {
+                store.commit('setSelected', null)
+                store.commit('removeValidMoves')
             }
         }
+    } else if (game.selected === null && game.turn[0] === square.piece[0]) setSelected(square)
+    else {
+        var isValid = isValidMove(coordsStr)
+        if (isValid) moveFromTo(game.selected, coordsStr)
         store.commit('setSelected', null)
         store.commit('removeValidMoves')
     }
 }
+
+function isValidMove(coordsStr) {
+    var moveIdx = game.validMoves.indexOf(coordsStr, 0)
+    return moveIdx !== -1
+}
+
 
 
 function getPossibleMoves(square) {
@@ -133,6 +144,14 @@ function getPossibleMoves(square) {
     store.commit('setValidMoves', moves)
     return moves
 }
+
+function setSelected(square) {
+    var coordsStr = getCoordsStr(square.coords)
+    store.commit('setSelected', coordsStr)
+    var possibleMoves = getPossibleMoves(square)
+    store.commit('setValidMoves', possibleMoves)
+}
+
 function getPawnMoves(square) {
     var coordsStr
     var moves = []
@@ -258,44 +277,59 @@ function getKingMoves(square) {
     return moves
 }
 
-function moveTo(coordsStr) {
+function moveFromTo(moveFrom, moveTo) {
     //check if online or offline
-    if (game.gameId) {
-        store.commit('sendMoveToServer', { gameId, moveFrom: game.selected, moveTo: coordsStr })
-    }
-    var toRemove = game.selected
-    var pieceToMove = game.board[toRemove].piece
+    console.log('moveFrom: ', moveFrom)
+    var pieceToMove = game.board[moveFrom].piece
     // console.log('to remove: ',toRemove)
-    store.commit('setPiece', { piece: 'empty', coordsStr: toRemove })
-    store.commit('setPiece', { piece: pieceToMove, coordsStr })
+    console.log('piece to move:', pieceToMove)
+    store.commit('setPiece', { piece: pieceToMove, coordsStr: moveTo })
+    store.commit('setPiece', { piece: 'empty', coordsStr: moveFrom })
     store.commit('setSelected', null)
     store.commit('removeValidMoves')
-    // store.commit('setPiece',pieceToMove,coordsStr)
+    changePlayerTurn()
 }
-
-// function getPieceVal(i,j){
-//     var coordsStr = getCoordsStr({i,j})
-//     return game.board[coordsStr].piece
-// }
 
 function getCoordsStr(coords) {
     return coords.i + '-' + coords.j
 }
 
 function changePlayerTurn() {
-    var player = game.turn === 'white' ? 'black' : 'white'
+    var currTurn = game.turn === 'white' ? 'black' : 'white'
+    store.commit('setPlayerTurn', currTurn)
 
-    store.commit('setPlayerTurn', player)
+}
 
+function sendServerMove(moveFrom, moveTo) {
+    var moveInfo = {
+        moveFrom,
+        moveTo,
+        gameId: game.gameId
+    }
+    console.log(moveInfo)
+    socket.emit('movePiece', moveInfo)
 }
 
 function isValidIndex(i, j) {
     return (i >= 0 && i < 8 && j >= 0 && j < 8)
 
 }
+function searchGameOnline() {
+    socket.emit('searchGame')
+}
+
+socket.on('gameFound', gameData => {
+    console.log('game has been found', gameData)
+    store.commit('joinGame', gameData)
+})
+socket.on('updateBoard', moveInfo => {
+    console.log('enemy player move info:', moveInfo)
+    moveFromTo(moveInfo.moveFrom, moveInfo.moveTo)
+})
 
 export default {
     getNewBoard,
-    squareClicked
+    squareClicked,
+    searchGameOnline
 }
 

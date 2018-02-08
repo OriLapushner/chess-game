@@ -19,8 +19,12 @@ export default {
 </script>
 
 <style>
-#app{
+body{
   background: rgba(21, 24, 29, 0.733);
+
+}
+#app{
+  height: 100%;
 }
 </style>
 

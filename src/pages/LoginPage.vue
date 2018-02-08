@@ -1,11 +1,16 @@
 <template>
   <section>
-      <h1> LOGIN PAGE</h1>
+      <login-box></login-box>
   </section>
 </template>
 
 <script>
+import loginBox from "../components/loginBox";
 export default {
-  
-}
+  components: {
+    loginBox
+  }
+};
 </script>
+
+

@@ -1,14 +1,16 @@
 <template>
   <section>
-      <h1>
-          SIGNUP PAGE!!!
-     </h1>
+          <signup-box></signup-box>
   </section>
 </template>
 
 <script>
+import signupBox from '../components/signupBox'
 export default {
-  name: "SignupPage"
+  name: "SignupPage",
+  components: {
+    signupBox
+  }
 };
-</script>
+</script> 
 

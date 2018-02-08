@@ -7,7 +7,7 @@ export default {
         selected:null,
         validMoves:[],
         msgToPlayer: '',
-        playerColor: null
+        isOnline: false
     },
            
     getters: {
@@ -17,8 +17,8 @@ export default {
         setBoard(state, board) {
             state.board = board
         },
-        setPlayerTurn(state,player){
-            state.turn = player
+        setPlayerTurn(state,currTurn){
+            state.turn = currTurn
         },
         setSelected(state, piece){
             state.selected = piece
@@ -39,27 +39,14 @@ export default {
             });
             state.validMoves = []
         },
-        joinGame(state,gameInfo){
-            console.log(gameInfo)
-            state.playerColor = gameInfo.color
-            state.gameId = gameInfo.gameId
-            state.msgToPlayer = 'your turn'
+        joinGame(state,{color,gameId}){
+            // console.log('join game info:',gameInfo)
+            state.playerColor = color
+            state.gameId = gameId
+            state.msgToPlayer = 'white player turn'
+            state.turn = 'white'
+            state.isOnline = true
         },
         
-    },
-    actions: {
-    //     login({ commit }, userInfo) {
-    //         console.log('commit', commit, 'user info:', userInfo)
-    //         UserService.login(userInfo.username, userInfo.pass)
-    //             .then(res => commit({ type: 'setUser', user: res.data.user }))
-
-    //     },
-    //     signup({ commit }, userDetails) {
-    //         console.log(userDetails)
-    //         UserService.signup(userDetails).then(user => {
-    //             commit({ type: 'setUser', user })
-    //         })
-    //     },
-    // }
     }
 }

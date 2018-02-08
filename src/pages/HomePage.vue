@@ -11,6 +11,7 @@
 <script>
 "use strict";
 import chessBoard from '../components/ChessBoard'
+import chessService from '../services/chessService'
 export default {
   name: "HomePage",
   data() {
@@ -31,7 +32,7 @@ export default {
       if(this.$store.state.game.turn === null) this.$store.commit('setPlayerTurn','white')
     },
     searchGameOnline(){
-      this.$socket.emit('searchGame')
+      chessService.searchGameOnline()
     }
   },
   

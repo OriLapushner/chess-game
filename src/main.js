@@ -6,11 +6,6 @@ import Vuex from 'vuex'
 import App from './App'
 import router from './router/index.js'
 import myStore from './store/store.js'
-import VueSocketio from 'vue-socket.io';
-
-//activate to use server:
-Vue.use(VueSocketio, 'http://localhost:3003')
-
 
 Vue.config.productionTip = false
 
@@ -19,12 +14,5 @@ new Vue({
   router,
   template: '<App/>',
   components: { App },
-  store: myStore,
-  sockets: {
-            gameFound(gameData){
-              console.log('game has been found',gameData)
-              this.$store.commit('joinGame',gameData)
-            }
-    
-    }
+  store: myStore
 })
