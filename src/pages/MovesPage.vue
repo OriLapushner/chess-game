@@ -1,7 +1,7 @@
 <template>
   <section>
     <h1>Moves</h1>
-      <piece-info v-for="(piece, idx) in piecesInfo" :key="idx" :piece="piece"></piece-info>
+      <piece-info class="piece-info" v-for="(piece, idx) in piecesInfo" :key="idx" :piece="piece"> </piece-info>
   </section>
 </template>
 
@@ -24,7 +24,11 @@ export default {
 </script>
 
 <style>
-h1{
+.piece-info {
   margin: auto;
+  padding-right: 200px;
+}
+h1{
+  text-align: center;
 }
 </style>

@@ -6,6 +6,7 @@ import axios from 'axios'
 import store from '../store/store.js'
 
 function signup(userInfo) {
+    console.log('signup req sent')
     return axios({
         method: 'post',
         url: SIGNUP_URL,

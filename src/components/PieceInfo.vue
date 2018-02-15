@@ -19,16 +19,16 @@ export default {
 </script>
 
 <style scoped>
+
 section{
   max-width: 700px;
-  border-bottom: 2px solid black;
+  border-bottom: 1px solid rgb(124, 146, 207);
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
 }
 .name-img-container{
   text-align: center;
-  min-width:150px;
+  min-width:100px;
   display: inline-block;
 }
 .piece-img{

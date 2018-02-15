@@ -98,7 +98,7 @@ function squareClicked(square) {
         else {
             var isValid = isValidMove(coordsStr)
             if (isValid) {
-                console.log('selected: ', game.selected, 'coords str', coordsStr)
+                // console.log('selected: ', game.selected, 'coords str', coordsStr)
                 sendServerMove(game.selected, coordsStr)
                 moveFromTo(game.selected, coordsStr)
             }
@@ -110,7 +110,9 @@ function squareClicked(square) {
     } else if (game.selected === null && game.turn[0] === square.piece[0]) setSelected(square)
     else {
         var isValid = isValidMove(coordsStr)
-        if (isValid) moveFromTo(game.selected, coordsStr)
+        if (isValid) {
+            moveFromTo(game.selected, coordsStr)
+        }
         store.commit('setSelected', null)
         store.commit('removeValidMoves')
     }
@@ -123,49 +125,86 @@ function isValidMove(coordsStr) {
 
 
 
-function getPossibleMoves(square) {
+function getPossibleMoves(square, board) {
     var moves = []
     if (square.piece === 'white-pawn' || square.piece === 'black-pawn') {
-        moves = getPawnMoves(square)
+        moves = getPawnMoves(square, board)
     } else if (square.piece === 'black-rook' || square.piece === 'white-rook') {
-        moves = getRookMoves(square)
+        moves = getRookMoves(square, board)
     } else if (square.piece === 'black-bishop' || square.piece === 'white-bishop') {
-        moves = getBishopMoves(square)
+        moves = getBishopMoves(square, board)
     } else if (square.piece === 'black-queen' || square.piece === 'white-queen') {
-        moves.push(...getBishopMoves(square), ...getRookMoves(square))
-        // moves.push()
+        moves = getQueenMoves(square, board)
     }
     else if (square.piece === 'black-knight' || square.piece === 'white-knight') {
-        moves = getKnightMoves(square)
+        moves = getKnightMoves(square, board)
     }
     else if (square.piece === 'black-king' || square.piece === 'white-king') {
-        moves = getKingMoves(square)
+        moves = getKingMoves(square, board)
     }
-    store.commit('setValidMoves', moves)
     return moves
+}
+
+function simulateMove(board, from, to) {
+    var newBoard = JSON.parse(JSON.stringify(board))
+    newBoard[to].piece = newBoard[from].piece
+    newBoard[from].piece = 'empty'
+    // console.log(newBoard)
+    return newBoard
+    // console.log('normal board from: ', board[from].piece, 'simulated board from: ', newBoard[from].piece)
+}
+
+function removeMateMoves(moves, board, pieceCoords, playerThreatend) {
+    var newMoves = [];
+    for (let i = 0; i < moves.length; i++) {
+        var simulatedBoard = simulateMove(board, pieceCoords, moves[i])
+        var isMate = mateVerification(simulatedBoard, playerThreatend)
+        if (!isMate) newMoves.push(moves[i])
+    }
+    return newMoves
+}
+
+function mateVerification(board, colorThreatened) {
+    var moves = [];
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+            var coords = i + '-' + j
+            moves = getPossibleMoves(board[coords], board)
+            for (let g = 0; g < moves.length; g++) {
+                // console.log(colorThreatened)
+                if (board[moves[g]].piece === colorThreatened + '-king') {
+                    console.log(colorThreatened, ' being threatened')
+                    return true
+                }
+            }
+        }
+    }
+    return false
 }
 
 function setSelected(square) {
     var coordsStr = getCoordsStr(square.coords)
     store.commit('setSelected', coordsStr)
-    var possibleMoves = getPossibleMoves(square)
-    store.commit('setValidMoves', possibleMoves)
+    var moves = getPossibleMoves(square, game.board)
+    moves = removeMateMoves(moves, game.board, game.selected, game.turn)
+    store.commit('setValidMoves', moves)
+
 }
 
-function getPawnMoves(square) {
+function getPawnMoves(square, board) {
     var coordsStr
     var moves = []
     var direction = square.piece[0] === 'w' ? 1 : -1;
     var isValid = isValidIndex(square.coords.i + direction, square.coords.j)
-    console.log(isValid)
+    // console.log(isValid)
     if (isValid) {
         coordsStr = square.coords.i + direction + '-' + square.coords.j
-        if (game.board[coordsStr].piece === 'empty') {
+        if (board[coordsStr].piece === 'empty') {
             moves.push(coordsStr)
             coordsStr = square.coords.i + 2 * direction + '-' + square.coords.j
             isValid = isValidIndex(square.coords.i + 2 * direction, square.coords.j)
             if (isValid) {
-                if (game.board[coordsStr].piece === 'empty') {
+                if (board[coordsStr].piece === 'empty') {
                     if (direction === 1 && square.coords.i === 1) moves.push(coordsStr)
                     else if (direction === -1 && square.coords.i === 6) moves.push(coordsStr)
                 }
@@ -175,45 +214,45 @@ function getPawnMoves(square) {
     isValid = isValidIndex(square.coords.i + direction, square.coords.j + 1)
     if (isValid) {
         coordsStr = getCoordsStr({ i: square.coords.i + direction, j: square.coords.j + 1 })
-        if (game.board[coordsStr].piece[0] !== square.piece[0] &&
-            game.board[coordsStr].piece !== 'empty') moves.push(coordsStr)
+        if (board[coordsStr].piece[0] !== square.piece[0] &&
+            board[coordsStr].piece !== 'empty') moves.push(coordsStr)
     }
     isValid = isValidIndex(square.coords.i + direction, square.coords.j - 1)
     if (isValid) {
         coordsStr = getCoordsStr({ i: square.coords.i + direction, j: square.coords.j - 1 })
-        if (game.board[coordsStr].piece[0] !== square.piece[0] &&
-            game.board[coordsStr].piece !== 'empty') moves.push(coordsStr)
+        if (board[coordsStr].piece[0] !== square.piece[0] &&
+            board[coordsStr].piece !== 'empty') moves.push(coordsStr)
     }
     return moves
 }
 
-function getRookMoves(square) {
+function getRookMoves(square, board) {
     var moves = []
-    var top = getDirectionMove(square, 1, 0)
+    var top = getDirectionMove(square, 1, 0, board)
     moves.push(...top)
-    var bot = getDirectionMove(square, -1, 0)
+    var bot = getDirectionMove(square, -1, 0, board)
     moves.push(...bot)
-    var right = getDirectionMove(square, 0, 1)
+    var right = getDirectionMove(square, 0, 1, board)
     moves.push(...right)
-    var left = getDirectionMove(square, 0, -1)
+    var left = getDirectionMove(square, 0, -1, board)
     moves.push(...left)
     return moves
 
 }
-function getBishopMoves(square) {
+function getBishopMoves(square, board) {
     var moves = []
-    var topLeft = getDirectionMove(square, -1, -1)
+    var topLeft = getDirectionMove(square, -1, -1, board)
     moves.push(...topLeft)
-    var topRight = getDirectionMove(square, -1, 1)
+    var topRight = getDirectionMove(square, -1, 1, board)
     moves.push(...topRight)
-    var botRight = getDirectionMove(square, 1, 1)
+    var botRight = getDirectionMove(square, 1, 1, board)
     moves.push(...botRight)
-    var botLeft = getDirectionMove(square, 1, -1)
+    var botLeft = getDirectionMove(square, 1, -1, board)
     moves.push(...botLeft)
     return moves
 }
 
-function getDirectionMove(square, iModifier, jModifier) {
+function getDirectionMove(square, iModifier, jModifier, board) {
     var moves = []
     var isActive = true
     var coordsStr
@@ -222,11 +261,11 @@ function getDirectionMove(square, iModifier, jModifier) {
         isValid = isValidIndex(square.coords.i + iModifier, square.coords.j + jModifier)
         if (isValid) {
             coordsStr = getCoordsStr({ i: square.coords.i + iModifier, j: square.coords.j + jModifier })
-            if (game.board[coordsStr].piece[0] === square.piece[0]) {
+            if (board[coordsStr].piece[0] === square.piece[0]) {
                 // console.log('adding move: ', coordsStr)
                 isActive = false
 
-            } else if (game.board[coordsStr].piece !== 'empty') {
+            } else if (board[coordsStr].piece !== 'empty') {
                 isActive = false
                 moves.push(coordsStr)
                 // console.log('stopped due to encounter')
@@ -241,15 +280,15 @@ function getDirectionMove(square, iModifier, jModifier) {
     return moves
 }
 
-function getKnightMoves(square) {
+function getKnightMoves(square, board) {
     var moves = []
     // console.log('knight at i:',square.coords.i,'j:',square.coords.j)
     for (let i = square.coords.i - 2; i < square.coords.i + 3; i++) {
         for (let j = square.coords.j - 2; j < square.coords.j + 3; j++) {
             if (!isValidIndex(i, j)) continue;
             var coordsStr = getCoordsStr({ i, j })
-            // console.log(game.board[coordsStr].piece[0])
-            if (game.board[coordsStr].piece[0] === square.piece[0]) continue
+            // console.log(board[coordsStr].piece[0])
+            if (board[coordsStr].piece[0] === square.piece[0]) continue
             var iDistance = Math.abs(square.coords.i - i)
             var jDistance = Math.abs(square.coords.j - j)
             if ((iDistance === 2 && jDistance === 1) ||
@@ -261,14 +300,19 @@ function getKnightMoves(square) {
     return moves
 }
 
-function getKingMoves(square) {
+function getQueenMoves(square, board) {
+    var moves = []
+    moves.push(...getBishopMoves(square, board), ...getRookMoves(square, board))
+    return moves
+}
+function getKingMoves(square, board) {
     var moves = []
     for (let i = square.coords.i - 1; i < square.coords.i + 2; i++) {
         for (let j = square.coords.j - 1; j < square.coords.j + 2; j++) {
             if (!isValidIndex(i, j)) continue
             if (i === square.coords.i && j === square.coords.j) continue
             var coordsStr = getCoordsStr({ i, j })
-            if (square.piece[0] === game.board[coordsStr].piece[0]) continue
+            if (square.piece[0] === board[coordsStr].piece[0]) continue
             moves.push(coordsStr)
 
         }
@@ -277,17 +321,54 @@ function getKingMoves(square) {
     return moves
 }
 
+function addToEaten(coordsStr) {
+    var piece = game.board[coordsStr].piece
+    // console.log('eaten piece added: ', piece, 'at ', coordsStr)
+    if (piece !== 'empty') {
+        var imgUrl = getImgUrl(piece)
+        store.commit('addEaten', { name: piece, imgUrl })
+    }
+}
+
+function getImgUrl(piece) {
+    return 'src/imgs/pieces/' + piece + '.png'
+}
+
 function moveFromTo(moveFrom, moveTo) {
+    addToEaten(moveTo)
     //check if online or offline
-    console.log('moveFrom: ', moveFrom)
+    // console.log('moveFrom: ', moveFrom)
     var pieceToMove = game.board[moveFrom].piece
     // console.log('to remove: ',toRemove)
-    console.log('piece to move:', pieceToMove)
+    // console.log('piece to move:', pieceToMove)
     store.commit('setPiece', { piece: pieceToMove, coordsStr: moveTo })
     store.commit('setPiece', { piece: 'empty', coordsStr: moveFrom })
     store.commit('setSelected', null)
     store.commit('removeValidMoves')
     changePlayerTurn()
+    var isGameWon = checkGameWon()
+    if (isGameWon) console.log('congrats,', game.turn, 'has lost')
+}
+
+function checkGameWon() {
+    // var colorToCheckFor = (game.turn === 'white' ? 'white' : 'black')
+    var isMate = mateVerification(game.board, game.turn)
+    if (isMate) {
+        // console.log('check game won verification true')
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                var coords = i + '-' + j
+                if (game.board[coords].piece[0] !== game.turn[0]) continue
+                var moves = getPossibleMoves(game.board[coords], game.board)
+                moves = removeMateMoves(moves, game.board, coords, game.turn)
+                // console.log('checking coords', coords, 'moves:', moves)
+                if (moves.length !== 0) return false
+
+            }
+
+        }
+        return true
+    }
 }
 
 function getCoordsStr(coords) {
@@ -306,7 +387,7 @@ function sendServerMove(moveFrom, moveTo) {
         moveTo,
         gameId: game.gameId
     }
-    console.log(moveInfo)
+    // console.log(moveInfo)
     socket.emit('movePiece', moveInfo)
 }
 
@@ -314,22 +395,40 @@ function isValidIndex(i, j) {
     return (i >= 0 && i < 8 && j >= 0 && j < 8)
 
 }
+
+function sendMsg(text) {
+    var msgInfo = {
+        text,
+        gameId: game.gameId,
+        playerColor: game.playerColor
+    }
+    // console.log(msgInfo)
+    socket.emit('sendMsg', msgInfo)
+}
+
 function searchGameOnline() {
     socket.emit('searchGame')
 }
 
 socket.on('gameFound', gameData => {
-    console.log('game has been found', gameData)
+    // console.log('game has been found', gameData)
     store.commit('joinGame', gameData)
-})
-socket.on('updateBoard', moveInfo => {
-    console.log('enemy player move info:', moveInfo)
-    moveFromTo(moveInfo.moveFrom, moveInfo.moveTo)
+
+    socket.on('updateBoard', moveInfo => {
+        // console.log('enemy player move info:', moveInfo)
+        moveFromTo(moveInfo.moveFrom, moveInfo.moveTo)
+    })
+
+    socket.on('forwardMsg', msgInfo => {
+        // console.log('messege received:', msgInfo)
+        store.commit('addMsg', msgInfo)
+    })
 })
 
 export default {
     getNewBoard,
     squareClicked,
-    searchGameOnline
+    searchGameOnline,
+    sendMsg
 }
 

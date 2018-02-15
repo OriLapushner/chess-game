@@ -2,7 +2,7 @@
 <div class="container">
   <h1>Signup</h1>
 
-  <form action="/">
+  <div class="form">
       <hr>
       <div>
         <div class="icon"><i class="icon-user"></i></div>
@@ -18,8 +18,8 @@
         </div>
       <select-menu class="select-menu"></select-menu>
       <p>By clicking Signup, you agree on our <a href="#">terms and condition</a>.</p>
-      <router-link to="/login" class="button" @click="signup">Signup</router-link>
-    </form>
+      <button class="button" @click="signup">Signup</button>
+    </div>
     </div>
 </template>
 
@@ -39,6 +39,7 @@ export default {
   },
   methods: {
     signup() {
+      console.log('signup was fired')
       var signupInfo = {
         username: this.username,
         pass: this.pass,
@@ -104,7 +105,7 @@ html {
   border: solid 1px #cbc9c9;
 }
 
-form {
+.form {
   margin: 0 30px;
 }
 
@@ -141,17 +142,18 @@ input[type="password"] {
   padding-left: 10px;
 }
 
-a.button {
+button {
+  border: none;
   text-align: center;
   font-size: 14px;
   font-weight: 600;
   color: white;
-  padding: 6px 25px 0px 20px;
   margin: 10px 8px 20px 0px;
+  padding-bottom: 3px;
   display: inline-block;
   text-decoration: none;
-  width: 50px;
-  height: 27px;
+  width: 80px;
+  height: 32px;
   border-radius: 5px;
   background-color: #3a57af;
   box-shadow: 0 3px rgba(58, 87, 175, 0.75);
@@ -160,7 +162,7 @@ a.button {
   position: relative;
 }
 
-a.button:hover {
+button:hover {
   top: 3px;
   background-color: #2e458b;
   -webkit-box-shadow: none;

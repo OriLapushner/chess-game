@@ -48,40 +48,40 @@ methods: {
           background:black;
 }
 .white-pawn{
-background-image: url("../imgs/pieces/w-pawn.png")
+background-image: url("../imgs/pieces/white-pawn.png")
 }
 .white-rook{
-background-image: url("../imgs/pieces/w-rook.png")
+background-image: url("../imgs/pieces/white-rook.png")
 }
 .white-knight{
-background-image: url("../imgs/pieces/w-knight.png")
+background-image: url("../imgs/pieces/white-knight.png")
 }
 .white-bishop{
-background-image: url("../imgs/pieces/w-bishop.png")
+background-image: url("../imgs/pieces/white-bishop.png")
 }
 .white-queen{
-background-image: url("../imgs/pieces/w-queen.png")
+background-image: url("../imgs/pieces/white-queen.png")
 }
 .white-king{
-background-image: url("../imgs/pieces/w-king.png")
+background-image: url("../imgs/pieces/white-king.png")
 }
 .black-pawn{
-background-image: url("../imgs/pieces/b-pawn.png")
+background-image: url("../imgs/pieces/black-pawn.png")
 }
 .black-rook{
-background-image: url("../imgs/pieces/b-rook.png")
+background-image: url("../imgs/pieces/black-rook.png")
 }
 .black-knight{
-background-image: url("../imgs/pieces/b-knight.png")
+background-image: url("../imgs/pieces/black-knight.png")
 }
 .black-bishop{
-background-image: url("../imgs/pieces/b-bishop.png")
+background-image: url("../imgs/pieces/black-bishop.png")
 }
 .black-queen{
-background-image: url("../imgs/pieces/b-queen.png")
+background-image: url("../imgs/pieces/black-queen.png")
 }
 .black-king{
-background-image: url("../imgs/pieces/b-king.png")
+background-image: url("../imgs/pieces/black-king.png")
 }
 </style>
 

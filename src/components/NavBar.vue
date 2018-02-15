@@ -1,7 +1,7 @@
 <template>
   <nav>
     <div class="navbar">
-      <router-link to="/">Home</router-link>
+      <router-link to="/">Play</router-link>
 
       <div class="dropdown">
         <button class="dropbtn">Learn 

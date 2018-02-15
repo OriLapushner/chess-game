@@ -1,11 +1,12 @@
 <template>
-  <section class="chess-board">
+  <section>
+    <div class="board-container">
             <board-square v-for="(square,idx) in board" class="board-square"
              :square="square" :key="idx">
 
             </board-square>
 
-      
+      </div>
   </section>
 </template>
 
@@ -38,17 +39,16 @@ export default {
 .board-square {
   margin: 0;
   border: none;
-  margin: auto;
+  /* margin: auto; */
   width: 12.5%;
   height: 12.5%;
 }
-.chess-board {
+.board-container {
   flex-wrap: wrap;
   align-items: flex-start;
   height: 400px;
   display: flex;
   width: 400px;
-  margin: auto;
 }
 </style>
 

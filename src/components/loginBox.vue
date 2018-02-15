@@ -33,12 +33,7 @@ export default {
   },
   methods: {
     login() {
-      var signupInfo = {
-        username: this.username,
-        pass: this.pass,
-        email: this.email
-      };
-      userService.login(signupInfo);
+      userService.login(this.username, this.pass);
     }
   }
 };
