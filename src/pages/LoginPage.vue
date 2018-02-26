@@ -1,6 +1,7 @@
 <template>
   <section>
       <login-box></login-box>
+      <img src="../imgs/general/icon.png" alt = "">
   </section>
 </template>
 
@@ -12,5 +13,14 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+img {
+  height: 250px;
+}
+</style>
+>
+
+</style>
 
 

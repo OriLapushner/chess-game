@@ -7,28 +7,31 @@
 
 
 <script>
-import pieceInfo from '../components/PieceInfo'
-import learnService from '../services/learnService'
+import pieceInfo from "../components/PieceInfo";
+import learnService from "../services/learnService";
 
 export default {
-  name:"MovesPage",
-  components:{
+  name: "MovesPage",
+  components: {
     pieceInfo
   },
-  data(){
+  data() {
     return {
       piecesInfo: learnService.piecesInfo
-    }
+    };
   }
-}
+};
 </script>
 
-<style>
+<style scoped>
+h1 {
+  font-size:2.4em
+}
 .piece-info {
   margin: auto;
-  padding-right: 200px;
 }
-h1{
+h1 {
   text-align: center;
+  margin-bottom: 40px;
 }
 </style>

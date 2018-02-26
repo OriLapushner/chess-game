@@ -1,15 +1,14 @@
 
 <template>
   <section>
-    <button @click="startGame">start offline</button>
+    <div class="button-container">
+    <button @click="startGame">play offline</button>
     <button @click="searchGameOnline">play online</button>
-    <h1>{{msgToPlayer}}</h1>
+    </div>
+      <game-state class="game-state"></game-state>
     <div class="game-container">
       <chess-board class="chess-board"></chess-board>
-      <div class="side-menu">
-      <game-state class="game-state"></game-state>
-      <chat-box class="chat-box" v-show="isOnline"></chat-box>
-      </div>
+      <chat-box class="chat-box" v-show="true"></chat-box>
     </div>
   </section>
 </template>
@@ -22,17 +21,10 @@ import gameState from "../components/GameState";
 import chatBox from "../components/ChatBox";
 export default {
   name: "HomePage",
-  data() {
-    return {};
-  },
   created() {},
   computed: {
     isOnline() {
-      // console.log(this.$store.state.game.isOnline)
       return this.$store.state.game.isOnline;
-    },
-    msgToPlayer() {
-      return this.$store.state.game.msgToPlayer;
     }
   },
   methods: {
@@ -53,20 +45,28 @@ export default {
 </script>
 
 <style scoped>
-.chat-box {
-  height: 200px;
+.button-container{
+  width: 330px;
+  margin: 20px auto 0 auto;
+  display: flex;
+  justify-content: space-between;
 }
-.game-state {
-  height: 200px;
+hr{
+  border: none;
+  background: rgba(114, 110, 110, 0.521);
+  height: 1px;
+  width: 100%;
+}
+.chat-box {
+  background: rgb(176, 190, 211);
+  margin-left: 20px;
 }
 .game-container {
+  padding-bottom:30px;
+  margin: auto;
+  max-width: 690px;
   display: flex;
-}
-.side-menu {
-  height: 400px;
-  flex-direction: column;
-  display: flex;
-  margin-left: 20px;
+  flex-wrap: wrap;
 }
 .chess-board {
   display: inline-block;

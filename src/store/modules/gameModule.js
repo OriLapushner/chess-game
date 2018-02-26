@@ -9,7 +9,6 @@ export default {
         whiteEaten: [],
         blackEaten: [],
         validMoves: [],
-        msgToPlayer: '',
         messages: [],
         isOnline: false
     },
@@ -51,7 +50,6 @@ export default {
             // console.log('join game info:',gameInfo)
             state.playerColor = color
             state.gameId = gameId
-            state.msgToPlayer = 'white player turn'
             state.turn = 'white'
             state.isOnline = true
         },

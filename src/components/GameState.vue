@@ -1,16 +1,20 @@
 <template>
-<section class="gameState-container">
+<section class="game-state-container">
+  <div class="players-state-container">
+  <div class="player-state white">
     <span>white Eaten:</span>
     <div class="white-eaten">
-    <img v-for="(piece,idx) in whiteEaten" :src="piece.imgUrl" :key="idx" >
+      <img v-for="(piece,idx) in whiteEaten" :src="piece.imgUrl" :key="idx" >
+      </div>
     </div>
-    <hr>
+    <div class="player-state black">
+      <span>black Eaten:</span>
+      <div class="black-eaten">
+        <img v-for="(piece,idx) in blackEaten" :src="piece.imgUrl" :key="idx">
+      </div>
+    </div>
+    </div>
     <p>{{turnState}}</p>
-    <hr>
-    <span>black Eaten:</span>
-    <div class="black-eaten">
-    <img v-for="(piece,idx) in blackEaten" :src="piece.imgUrl" :key="idx">
-    </div>
   </section>
 </template>
 
@@ -25,6 +29,7 @@ export default {
       return this.$store.state.game.blackEaten;
     },
     turnState() {
+      if (this.$store.state.game.turn === null) return "";
       if (this.$store.state.game.playerColor) {
         if (this.$store.state.game.turn === this.$store.state.game.playerColor)
           return "your turn";
@@ -39,19 +44,39 @@ export default {
 
 
 <style scoped>
-.gameState-container {
-  background: white;
-  width: 300px; 
+.white {
+    border-radius: 10px 0px 0px 10px;
+  /* border-bottom-right-radius: 10px; */
+}
+.black {
+  border-radius: 0px 10px 10px 0px;
+}
+.players-state-container {
+  margin: 30px;
+  display: flex;
+  justify-content: center;
+}
+.player-state {
+  max-width: 300px;
+  background: rgb(192, 178, 194);
+  width: 50%;
+  justify-content: space-around;
+  height: 60px;
+}
+.game-state-container {
+  width: 100%;
+  height: 150px;
+  text-align: center;
 }
 hr {
   border: none;
   height: 1px;
-  background: rgba(211, 200, 200, 0.521);
+  background: rgba(114, 110, 110, 0.521);
 }
 img {
-  width: 20px;
+  width: 30px;
 }
-/* span,p {
-    margin: 30px;
-} */
+p {
+  font-size: 1.3em;
+}
 </style>

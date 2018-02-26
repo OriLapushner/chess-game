@@ -21,12 +21,16 @@ export default {
 <style scoped>
 
 section{
+  min-height: 250px;  
   max-width: 700px;
-  border-bottom: 1px solid rgb(124, 146, 207);
+  border-bottom: 1px solid rgb(184, 191, 211);
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 .name-img-container{
+  align-self: center;
+  padding-bottom: 50px;
   text-align: center;
   min-width:100px;
   display: inline-block;
@@ -37,12 +41,17 @@ section{
 }
 section .move-img{
    width: 160px;
-   margin-bottom: 10px;
-   align-self: center
+   height: 160px;
+   margin: auto;
 }
 .text{
   max-width: 300px;
-  margin: 30px 20px 0px 0px;
+  margin: auto;
   text-align: center;
+}
+
+.text-img-container{
+  display: flex;
+  justify-content:space-between;
 }
 </style>

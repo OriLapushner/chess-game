@@ -13,7 +13,18 @@
 
 <script>
 import chessService from "../services/chessService";
+import { eventBus } from "../services/eventBus.js";
 export default {
+  created() {
+    eventBus.$on("scrollBottom", () => {
+      setTimeout(msgsContainer => {
+        var msgsContainer = document.querySelector(".messages-container");
+        //390 is calculated value of difference when it is fully scorlled bottom - design dependant value
+        if (msgsContainer.scrollHeight - msgsContainer.scrollTop > 390) return;
+        msgsContainer.scrollTop = msgsContainer.scrollHeight;
+      }, 0);
+    });
+  },
   data() {
     return {
       msg: ""
@@ -25,7 +36,8 @@ export default {
         chessService.sendMsg(this.msg);
         this.msg = "";
       }
-    }
+    },
+    scrollDown() {}
   },
   computed: {
     messages() {
@@ -38,28 +50,52 @@ export default {
 
 <style scoped>
 .messages-container {
+  overflow-x: hidden;
+  margin-top: 4px;
   overflow-y: scroll;
+  scroll-behavior: auto;
 }
+.messages-container::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
+}
+
+.messages-container::-webkit-scrollbar {
+  width: 10px;
+  background-color: #f5f5f5;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background-color: #0ae;
+}
+
 .msg-container {
   margin-bottom: 5px;
 }
 .sender {
-  color: rgb(185, 171, 171);
+  padding: 0px 0px 0px 3px;
+  margin-left: 2px;
+  color: rgb(232, 230, 238);
+  background: rgb(118, 154, 207);
+  border-radius: 3px;
 }
 input {
+  font-family: sans-serif;
+  font-size: 14px;
   margin: 0 auto;
   border-left: 10px solid white;
   border-radius: 10px;
-  height: 25px;
-  width: 70%;
+  min-height: 30px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .box-container {
+  border-radius: 8px;
+  height: 400px;
+  font-size: 14px;
   display: flex;
   flex-direction: column-reverse;
-  /* align-items: flex-end; */
-}
-section {
-  background: rgb(176, 190, 211);
+  width: 250px;
 }
 </style>

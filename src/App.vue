@@ -20,7 +20,8 @@ export default {
 
 <style>
 body{
-  background: rgba(21, 24, 29, 0.733);
+  font-family: "Open Sans", sans-serif;
+  background: rgba(55, 79, 121, 0.733);
 
 }
 #app{
