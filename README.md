@@ -1,21 +1,24 @@
-# insta
+# Chess Masters
 
 > A Vue.js project
 
-## Build Setup
+this is the frontend,to run it online the backend is needed.
+can be played without the backend in offline mode too.
+This project backend:
+https://github.com/OriLapushner/chess-backend
+
+
+### how to run:
 
 ``` bash
+
+*npm is required to run this app
 # install dependencies
-npm install
-
+open cmd on files path and type "npm install"
 # serve with hot reload at localhost:8080
-npm run dev
-
+on files path type "npm run dev"
 # build for production with minification
-npm run build
+on files path "npm run build"
 
-# build for production and view the bundle analyzer report
-npm run build --report
+
 ```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
