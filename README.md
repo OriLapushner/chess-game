@@ -11,12 +11,16 @@ https://github.com/OriLapushner/chess-backend
 ### how to run:
 
 ``` bash
-
 *npm is required to run this app
+
 # install dependencies
 open cmd on files path and type "npm install"
+
+
 # serve with hot reload at localhost:8080
 on files path type "npm run dev"
+
+
 # build for production with minification
 on files path "npm run build"
 
