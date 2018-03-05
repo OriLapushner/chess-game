@@ -1,7 +1,6 @@
 <template>
   <section>
       <login-box></login-box>
-      <img src="../imgs/general/icon.png" alt = "">
   </section>
 </template>
 
