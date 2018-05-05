@@ -1,6 +1,6 @@
 <template>
   <section>
-      <login-box :inputsInfo="loginInputs" :func="login"></login-box>
+      <login-box :inputsInfo="changePass" :func="login"></login-box>
   </section>
 </template>
 
@@ -10,7 +10,7 @@ import userService from "../services/userService";
 export default {
   data() {
     return {
-      loginInputs: {
+      changePass: {
         username: {
           iconClass: "icon-user",
           placeholder: "Username",
@@ -19,6 +19,11 @@ export default {
         pass: {
           iconClass: "icon-shield",
           placeholder: "Password",
+          inputValue: ""
+        },
+        newPass: {
+          iconClass: "icon-shield",
+          placeholder: "New Password",
           inputValue: ""
         }
       }
@@ -29,12 +34,12 @@ export default {
   },
   methods: {
     login() {
-      console.log(this.loginInputs)
-      userService.login(this.loginInputs.username.inputValue, this.loginInputs.pass.inputValue);
+      console.log(this.loginInputs);
+      userService.login(
+        this.loginInputs.username.inputValue,
+        this.loginInputs.pass.inputValue
+      );
     }
   }
 };
 </script>
-
-
-

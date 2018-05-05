@@ -2,57 +2,37 @@
 <div class="container">
   <h1>Signup</h1>
 
-  <div class="form">
+  <form class="form" action="javascript:void(0);" :method="signup">
       <hr>
-      <div>
-        <div class="icon"><i class="icon-user"></i></div>
-          <input type="text" placeholder="Username" v-model="username" required/>
-      </div>
-      <div>
-        <div class="icon"><i class="icon-envelope"></i></div>
-          <input type="password" placeholder="Password" required v-model="pass"/>
-      </div>
-      <div>
-        <div class="icon"><i class="icon-shield"></i></div>
-        <input type="text" placeholder="Email" v-model="email" required/>
-        </div>
+      <input-field v-for="inputInfo in signupInfo" :inputInfo="inputInfo"></input-field>
       <select-menu class="select-menu"></select-menu>
-      <p>By clicking Signup, you agree on our <a href="#">terms and condition</a>.</p>
-      <button class="button" @click="signup">Signup</button>
+      <button class="button" @click="signup"><router-link to="/" class="link">Signup</router-link></button>
+    </form>
     </div>
-    </div>
+
 </template>
 
 <script>
-import userService from "../services/userService.js";
+import inputField from "./InputField";
 import selectMenu from "./SelectMenu";
 export default {
-  data() {
-    return {
-      username: "",
-      pass: "",
-      email: ""
-    };
-  },
+  props: ["signupInfo", "signup"],
   components: {
-    selectMenu
-  },
-  methods: {
-    signup() {
-      console.log('signup was fired')
-      var signupInfo = {
-        username: this.username,
-        pass: this.pass,
-        email: this.email
-      };
-      userService.signup(signupInfo);
-    }
+    selectMenu,
+    inputField
   }
 };
 </script>
 
 
 <style scoped>
+.link {
+  height: 100%;
+  width: 100%;
+  background: inherit;
+  color: inherit;
+  text-decoration: inherit;
+}
 .select-menu {
   margin: auto;
   margin-top: 25px;
@@ -62,10 +42,7 @@ export default {
   outline: none;
 }
 
-body,
-input,
-textarea,
-select {
+input {
   font-family: "Open Sans", sans-serif;
   font-size: 16px;
   color: #4c4c4c;
@@ -142,28 +119,26 @@ input[type="password"] {
   padding-left: 10px;
 }
 
-button {
+.button {
   border: none;
   text-align: center;
   font-size: 14px;
   font-weight: 600;
   color: white;
-  margin: 10px 8px 20px 0px;
+  margin: 30px auto 0px auto;
+  display: block;
   padding-bottom: 3px;
-  display: inline-block;
   text-decoration: none;
   width: 80px;
   height: 32px;
   border-radius: 5px;
   background-color: #3a57af;
-  box-shadow: 0 3px rgba(58, 87, 175, 0.75);
   transition: all 0.1s linear 0s;
   top: 0px;
   position: relative;
 }
 
 button:hover {
-  top: 3px;
   background-color: #2e458b;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;

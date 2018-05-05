@@ -2,40 +2,23 @@
 <div class="container">
   <h1>Login</h1>
 
-  <form action="/">
+  <form class="form" action="javascript:void(0);" :method="func">
       <hr>
-      <div>
-        <div class="icon"><i class="icon-user"></i></div>
-          <input type="text" placeholder="Username" v-model="username" required/>
-      </div>
-      <div>
-        <div class="icon"><i class="icon-envelope"></i></div>
-          <input type="password" placeholder="Password" required v-model="pass"/>
-      </div>
-      <router-link to="/home" class="button" @click="login">Login</router-link>
+      <InputField v-for="inputInfo in inputsInfo" :inputInfo="inputInfo"/>
+      <button class="button" @click="func"><router-link to="/" class="link">Login</router-link></button>
     </form>
     </div>
 </template>
 
 <script>
-import userService from "../services/userService.js";
 import selectMenu from "./SelectMenu";
+import InputField from "./InputField";
 export default {
-  data() {
-    return {
-      username: "",
-      pass: "",
-      email: ""
-    };
-  },
   components: {
     selectMenu
   },
-  methods: {
-    login() {
-      userService.login(this.username, this.pass);
-    }
-  }
+  props: ["inputsInfo", "func"],
+  components: { InputField }
 };
 </script>
 
@@ -66,10 +49,6 @@ p {
   margin-left: 18px;
 }
 
-.email {
-  padding-right: 25px;
-}
-
 h1 {
   font-size: 32px;
   font-weight: 300;
@@ -93,7 +72,7 @@ html {
   border: solid 1px #cbc9c9;
 }
 
-form {
+.form {
   margin: 0 30px;
 }
 
@@ -129,28 +108,33 @@ input[type="password"] {
   margin-top: 13px;
   padding-left: 10px;
 }
-
+.link {
+  height: 100%;
+  width: 100%;
+  background: inherit;
+  color: inherit;
+  text-decoration: inherit;
+}
 .button {
-  display: block;
+  border: none;
   text-align: center;
   font-size: 14px;
   font-weight: 600;
   color: white;
-  padding: 6px 25px 0px 20px;
-  margin: 40px auto;
+  margin: 30px auto 0px auto;
+  display: block;
+  padding-bottom: 3px;
   text-decoration: none;
-  width: 50px;
-  height: 27px;
+  width: 80px;
+  height: 32px;
   border-radius: 5px;
   background-color: #3a57af;
-  box-shadow: 0 3px rgba(58, 87, 175, 0.75);
   transition: all 0.1s linear 0s;
   top: 0px;
   position: relative;
 }
 
 .button:hover {
-  top: 3px;
   background-color: #2e458b;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;

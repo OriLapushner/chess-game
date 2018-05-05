@@ -12,8 +12,9 @@
         <router-link to="/moves">Moves</router-link>
         </div>
       </div> 
-      <router-link to="/login">Login</router-link>
-      <router-link to="/signup">Signup</router-link>
+      <router-link :to="signupRoute">{{signupText}}</router-link>
+      <router-link v-if="!isLoggedIn"  to="/login">Login</router-link>
+      <p v-else class="item" @click="logout">Logout</p>
     </div>
   </nav>
 </template>
@@ -21,32 +22,31 @@
 <script>
 export default {
   name: "NavBar",
-  data() {
-    return {};
+  computed: {
+    isLoggedIn() {
+      console.log(this.$store.getters.isLoggedIn)
+      return this.$store.getters.isLoggedIn;
+    },
+    signupText() {
+      return this.$store.getters.navSignupText;
+    },
+    signupRoute() {
+      return this.$store.getters.navSignupRoute;
+    }
   },
-  // computed: {
-  //   username() {
-  //     var user = this.$store.state.user.user;
-  //     if (user === null) return "Guest";
-  //     return user.username;
-  //   },
-  //   userId() {
-  //     return this.$store.state.user.user._id;
-  //   },
-  //   user() {
-  //     return this.$store.state.user.user;
-  //   }
-  // },
-  methods: {}
+  methods: {
+    logout() {
+      this.$store.commit("setUser", { username: "", pass: "" });
+    }
+  }
 };
 </script>
 
 <style scoped>
-/* nav{
-  display:flex;
-  width:100%;
-  justify-content: space-around;
-} */
+p {
+  margin: 0;
+  cursor: pointer;
+}
 .navbar {
   display: flex;
   justify-content: space-around;
@@ -55,8 +55,8 @@ export default {
   font-family: Arial;
 }
 
-/* Links inside the navbar */
-.navbar a {
+.navbar a,
+p {
   float: left;
   font-size: 16px;
   color: white;
@@ -65,13 +65,11 @@ export default {
   text-decoration: none;
 }
 
-/* The dropdown container */
 .dropdown {
   float: left;
   overflow: hidden;
 }
 
-/* Dropdown button */
 .dropdown .dropbtn {
   font-size: 16px;
   border: none;
@@ -81,13 +79,12 @@ export default {
   background-color: inherit;
 }
 
-/* Add a red background color to navbar links on hover */
 .navbar a:hover,
-.dropdown:hover .dropbtn {
+.dropdown:hover .dropbtn,
+.navbar p:hover {
   background-color: rgb(233, 52, 52);
 }
 
-/* Dropdown content (hidden by default) */
 .dropdown-content {
   display: none;
   position: absolute;
@@ -97,7 +94,6 @@ export default {
   z-index: 1;
 }
 
-/* Links inside the dropdown */
 .dropdown-content a {
   float: none;
   color: black;
@@ -107,12 +103,10 @@ export default {
   text-align: left;
 }
 
-/* Add a grey background color to dropdown links on hover */
 .dropdown-content a:hover {
   background-color: #ddd;
 }
 
-/* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
   display: block;
 }

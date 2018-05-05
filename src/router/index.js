@@ -6,6 +6,7 @@ import MovesPage from '../pages/MovesPage'
 import RulesPage from '../pages/RulesPage'
 import SignupPage from '../pages/SignupPage'
 import LoginPage from '../pages/LoginPage'
+import changePassPage from '../pages/changePassPage'
 
 Vue.use(Router)
 
@@ -37,5 +38,10 @@ export default new Router({
       name: 'MovesPage',
       component: MovesPage
     },
+    // {
+    // path: '/changepass',
+    // name: 'changePassPage',
+    // component: 'changePassPage'
+    // }    
   ]
 })

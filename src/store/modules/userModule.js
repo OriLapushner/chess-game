@@ -2,15 +2,23 @@ export default {
     state: {
         user:
         {
-            _id: '',
-            pass: '',
             username: '',
-            email: ''
+            pass: '',
         }
     },
            
     getters: {
-
+        isLoggedIn(state){
+            return (state.user.username !== '')
+        },
+        navSignupText(state){
+            if(state.user.username === '') return 'Signup'
+            else return 'My Account'
+        },
+        navSignupRoute(state){
+            if(state.user.username === '') return '/signup'
+            else return '/changePassword'
+        }
     },
     mutations: {
         setUser(state,user) {

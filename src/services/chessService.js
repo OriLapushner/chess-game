@@ -1,9 +1,8 @@
 import store from "../store/store.js";
-import io from "socket.io-client";
-import { eventBus } from "./eventBus.js";
-import piecesMoves from './MovesService.js'
-const socket = io("http://localhost:3003/");
+import piecesMoves from "./MovesService.js";
+import connectSocket from "./socketService.js";
 
+var socket = null;
 const game = store.state.game;
 function getNewBoard() {
   var board = {};
@@ -146,7 +145,7 @@ function getPossibleMoves(square, board) {
   ) {
     moves = piecesMoves.getKnightMoves(square, board);
   } else if (square.piece === "black-king" || square.piece === "white-king") {
-    moves = piecesMoves.getKingMoves(square, board);
+    moves = piecesMoves.getKingMoves(square, board, game.castling);
   }
   return moves;
 }
@@ -179,7 +178,7 @@ function mateVerification(board, colorThreatened) {
       for (let g = 0; g < moves.length; g++) {
         // console.log(colorThreatened)
         if (board[moves[g]].piece === colorThreatened + "-king") {
-          console.log(colorThreatened, " being threatened");
+          console.log("piece threatening: ", board[coords].piece);
           return true;
         }
       }
@@ -192,12 +191,11 @@ function setSelected(square) {
   var coordsStr = piecesMoves.getCoordsStr(square.coords);
   store.commit("setSelected", coordsStr);
   var moves = getPossibleMoves(square, game.board);
+  console.log(moves);
   moves = removeMateMoves(moves, game.board, game.selected, game.turn);
+  console.log(moves);
   store.commit("setValidMoves", moves);
 }
-
-
-
 
 function addToEaten(coordsStr) {
   var piece = game.board[coordsStr].piece;
@@ -223,16 +221,65 @@ function moveFromTo(moveFrom, moveTo) {
   store.commit("setPiece", { piece: "empty", coordsStr: moveFrom });
   store.commit("setSelected", null);
   store.commit("removeValidMoves");
-  playMoveSound()
+  castlingHandler(moveFrom, moveTo, pieceToMove);
+  playMoveSound();
   changePlayerTurn();
   var isGameWon = checkGameWon();
   if (isGameWon) console.log("congrats,", game.turn, "has lost");
+  updateCastlingState(moveFrom, moveTo);
 }
 
+function castlingHandler(moveFrom, moveTo, pieceToMove) {
+  if (pieceToMove === "white-king" && moveFrom === "0-4" ) {
+    if (moveTo === "0-2") {
+      store.commit("setPiece", { piece: "white-rook", coordsStr: "0-3" });
+      store.commit("setPiece", { piece: "empty", coordsStr: "0-0" });
+    }
+    else if(moveTo === '0-6'){
+      store.commit("setPiece", { piece: "white-rook", coordsStr: "0-5" });
+      store.commit("setPiece", { piece: "empty", coordsStr: "0-7" });
+    }
+  }
+  else if(pieceToMove === 'black-king' && moveFrom === '7-4'){
+    if (moveTo === "7-2") {
+      store.commit("setPiece", { piece: "black-rook", coordsStr: "7-3" });
+      store.commit("setPiece", { piece: "empty", coordsStr: "7-0" });
+    }
+    else if(moveTo === '7-6'){
+      store.commit("setPiece", { piece: "black-rook", coordsStr: "7-5" });
+      store.commit("setPiece", { piece: "empty", coordsStr: "7-7" });
+    }
+  }
+}
+function updateCastlingState(moveFrom, moveTo) {
+  var color, type, value;
+  if (moveFrom === "0-4" && game.castling.white.king)
+    store.commit("setCastling", { color: "white", type: "king", value: false });
+  if (moveFrom === "0-0" && game.castling.white.long)
+    store.commit("setCastling", { color: "white", type: "long", value: false });
+  else if (moveFrom === "0-7" && game.castling.white.short)
+    store.commit("setCastling", {
+      color: "white",
+      type: "short",
+      value: false
+    });
+  else if (moveFrom === "7-4" && game.castling.white)
+    store.commit("setCastling", { color: "black", type: "king", value: false });
+  else if (moveFrom === "7-0" && game.castling.black.long)
+    store.commit("setCastling", { color: "black", type: "long", value: false });
+  else if (moveFrom === "7-7" && game.castling.black.short)
+    store.commit("setCastling", {
+      color: "black",
+      type: "short",
+      value: false
+    });
+
+  console.log("move from:", moveFrom, "move to", moveTo);
+}
 function playMoveSound() {
-  var moveSound = new Audio
-  moveSound.src = "/src/sound/move-piece.wav"
-  moveSound.play()
+  var moveSound = new Audio();
+  moveSound.src = "/src/sound/move-piece.wav";
+  moveSound.play();
 }
 
 function checkGameWon() {
@@ -278,32 +325,18 @@ function sendMsg(text) {
   };
   // console.log(msgInfo)
   // store.commit("addMsg", msgInfo)
-  socket.emit('sendMsg', msgInfo)
+  socket.emit("sendMsg", msgInfo);
 }
 
 function searchGameOnline() {
+  if (!socket) socket = connectSocket();
   socket.emit("searchGame");
 }
-
-socket.on("gameFound", gameData => {
-  // console.log('game has been found', gameData)
-  store.commit("joinGame", gameData);
-
-  socket.on("updateBoard", moveInfo => {
-    // console.log('enemy player move info:', moveInfo)
-    moveFromTo(moveInfo.moveFrom, moveInfo.moveTo);
-  });
-
-  socket.on("forwardMsg", msgInfo => {
-    // console.log('messege received:', msgInfo)
-    store.commit("addMsg", msgInfo);
-    eventBus.$emit("scrollBottom");
-  });
-});
 
 export default {
   getNewBoard,
   squareClicked,
   searchGameOnline,
   sendMsg,
+  moveFromTo
 };

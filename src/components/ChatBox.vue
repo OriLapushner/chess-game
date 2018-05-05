@@ -13,7 +13,7 @@
 
 <script>
 import chessService from "../services/chessService";
-import { eventBus } from "../services/eventBus.js";
+import eventBus from "../services/eventBus.js";
 export default {
   created() {
     eventBus.$on("scrollBottom", () => {

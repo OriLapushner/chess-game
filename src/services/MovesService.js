@@ -1,10 +1,11 @@
-function getKnightMoves(square, board) {
+var moves = { 
+getKnightMoves(square, board){
     var moves = [];
     // console.log('knight at i:',square.coords.i,'j:',square.coords.j)
     for (let i = square.coords.i - 2; i < square.coords.i + 3; i++) {
       for (let j = square.coords.j - 2; j < square.coords.j + 3; j++) {
-        if (!isValidIndex(i, j)) continue;
-        var coordsStr = getCoordsStr({ i, j });
+        if (!this.isValidIndex(i, j)) continue;
+        var coordsStr = this.getCoordsStr({ i, j });
         // console.log(board[coordsStr].piece[0])
         if (board[coordsStr].piece[0] === square.piece[0]) continue;
         var iDistance = Math.abs(square.coords.i - i);
@@ -17,64 +18,87 @@ function getKnightMoves(square, board) {
       }
     }
     return moves;
-  }
+  },
   
-  function getQueenMoves(square, board) {
+  getQueenMoves(square, board){
     var moves = [];
-    moves.push(...getBishopMoves(square, board), ...getRookMoves(square, board));
+    moves.push(...this.getBishopMoves(square, board), ...this.getRookMoves(square, board));
     return moves;
-  }
-  function getKingMoves(square, board) {
+  },
+  getKingMoves(square, board,castling){
     var moves = [];
+    var castlingMoves = [];
     for (let i = square.coords.i - 1; i < square.coords.i + 2; i++) {
       for (let j = square.coords.j - 1; j < square.coords.j + 2; j++) {
-        if (!isValidIndex(i, j)) continue;
+        if (!this.isValidIndex(i, j)) continue;
         if (i === square.coords.i && j === square.coords.j) continue;
-        var coordsStr = getCoordsStr({ i, j });
+        var coordsStr = this.getCoordsStr({ i, j });
         if (square.piece[0] === board[coordsStr].piece[0]) continue;
         moves.push(coordsStr);
       }
     }
+    castlingMoves = this.getCastlingMoves(square,board,castling)
+    moves.push(...castlingMoves)
     return moves;
-  }
-  
-  function getRookMoves(square, board) {
+  },
+  getCastlingMoves(square,board,castling){
     var moves = [];
-    var top = getDirectionMove(square, 1, 0, board);
+      if(square.piece[0] === 'w'){
+      if(castling.white.king){
+        if(castling.white.long && board['0-1'].piece === 'empty' && board['0-2'].piece === 'empty'
+          && board['0-3'].piece === 'empty')moves.push('0-2')
+
+        if(castling.white.short && board['0-5'].piece === 'empty' &&
+         board['0-6'].piece === 'empty')moves.push('0-6')
+      }
+    }
+    else if(castling.black.king){
+      if(castling.black.long && board['7-1'].piece === 'empty' && board['7-2'].piece === 'empty'
+      && board['7-3'].piece === 'empty') moves.push('7-2')
+
+    if(castling.white.short && board['7-5'].piece === 'empty' 
+    && board['7-6'].piece === 'empty') moves.push('7-6')
+
+    }
+    return moves
+  },
+  getRookMoves(square, board) {
+    var moves = [];
+    var top = this.getDirectionMove(square, 1, 0, board);
     moves.push(...top);
-    var bot = getDirectionMove(square, -1, 0, board);
+    var bot = this.getDirectionMove(square, -1, 0, board);
     moves.push(...bot);
-    var right = getDirectionMove(square, 0, 1, board);
+    var right = this.getDirectionMove(square, 0, 1, board);
     moves.push(...right);
-    var left = getDirectionMove(square, 0, -1, board);
+    var left = this.getDirectionMove(square, 0, -1, board);
     moves.push(...left);
     return moves;
-  }
-  function getBishopMoves(square, board) {
+  },
+  getBishopMoves(square, board) {
     var moves = [];
-    var topLeft = getDirectionMove(square, -1, -1, board);
+    var topLeft = this.getDirectionMove(square, -1, -1, board);
     moves.push(...topLeft);
-    var topRight = getDirectionMove(square, -1, 1, board);
+    var topRight = this.getDirectionMove(square, -1, 1, board);
     moves.push(...topRight);
-    var botRight = getDirectionMove(square, 1, 1, board);
+    var botRight = this.getDirectionMove(square, 1, 1, board);
     moves.push(...botRight);
-    var botLeft = getDirectionMove(square, 1, -1, board);
+    var botLeft =this.getDirectionMove(square, 1, -1, board);
     moves.push(...botLeft);
     return moves;
-  }
+  },
 
-  function getDirectionMove(square, iModifier, jModifier, board) {
+  getDirectionMove(square, iModifier, jModifier, board) {
     var moves = [];
     var isActive = true;
     var coordsStr;
     var isValid;
     while (isActive) {
-      isValid = isValidIndex(
+      isValid = this.isValidIndex(
         square.coords.i + iModifier,
         square.coords.j + jModifier
       );
       if (isValid) {
-        coordsStr = getCoordsStr({
+        coordsStr = this.getCoordsStr({
           i: square.coords.i + iModifier,
           j: square.coords.j + jModifier
         });
@@ -94,20 +118,20 @@ function getKnightMoves(square, board) {
       else if (jModifier > 0) jModifier++;
     }
     return moves;
-  }
+  },
 
-  function getPawnMoves(square, board) {
+  getPawnMoves(square, board) {
     var coordsStr;
     var moves = [];
     var direction = square.piece[0] === "w" ? 1 : -1;
-    var isValid = isValidIndex(square.coords.i + direction, square.coords.j);
+    var isValid = this.isValidIndex(square.coords.i + direction, square.coords.j);
     // console.log(isValid)
     if (isValid) {
       coordsStr = square.coords.i + direction + "-" + square.coords.j;
       if (board[coordsStr].piece === "empty") {
         moves.push(coordsStr);
         coordsStr = square.coords.i + 2 * direction + "-" + square.coords.j;
-        isValid = isValidIndex(square.coords.i + 2 * direction, square.coords.j);
+        isValid = this.isValidIndex(square.coords.i + 2 * direction, square.coords.j);
         if (isValid) {
           if (board[coordsStr].piece === "empty") {
             if (direction === 1 && square.coords.i === 1) moves.push(coordsStr);
@@ -117,9 +141,9 @@ function getKnightMoves(square, board) {
         }
       }
     }
-    isValid = isValidIndex(square.coords.i + direction, square.coords.j + 1);
+    isValid = this.isValidIndex(square.coords.i + direction, square.coords.j + 1);
     if (isValid) {
-      coordsStr = getCoordsStr({
+      coordsStr = this.getCoordsStr({
         i: square.coords.i + direction,
         j: square.coords.j + 1
       });
@@ -129,9 +153,9 @@ function getKnightMoves(square, board) {
       )
         moves.push(coordsStr);
     }
-    isValid = isValidIndex(square.coords.i + direction, square.coords.j - 1);
+    isValid = this.isValidIndex(square.coords.i + direction, square.coords.j - 1);
     if (isValid) {
-      coordsStr = getCoordsStr({
+      coordsStr = this.getCoordsStr({
         i: square.coords.i + direction,
         j: square.coords.j - 1
       });
@@ -142,22 +166,13 @@ function getKnightMoves(square, board) {
         moves.push(coordsStr);
     }
     return moves;
-  }
-  function isValidIndex(i, j) {
+  },
+   isValidIndex(i, j) {
     return i >= 0 && i < 8 && j >= 0 && j < 8;
-  }
+  },
 
-  function getCoordsStr(coords) {
+   getCoordsStr(coords) {
     return coords.i + "-" + coords.j;
   }
-
-  export default {
-      getBishopMoves,
-      getKingMoves,
-      getKnightMoves,
-      getPawnMoves,
-      getQueenMoves,
-      getRookMoves,
-      getCoordsStr
-
-  }
+}
+  export default moves
