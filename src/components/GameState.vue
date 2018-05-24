@@ -14,7 +14,7 @@
       </div>
     </div>
     </div>
-    <p>{{turnState}}</p>
+    <p>{{gameMsg}}</p>
   </section>
 </template>
 
@@ -28,9 +28,10 @@ export default {
     blackEaten() {
       return this.$store.state.game.blackEaten;
     },
-    turnState() {
-      if (this.$store.state.game.turn === null) return "";
-      if (this.$store.state.game.playerColor) {
+    gameMsg() {
+      if(this.$store.state.game.winner) return this.$store.state.game.winner + ' has won'
+      else if (this.$store.state.game.turn === null) return "";
+      else if (this.$store.state.game.playerColor) {
         if (this.$store.state.game.turn === this.$store.state.game.playerColor)
           return "your turn";
         else return "enemy turn";

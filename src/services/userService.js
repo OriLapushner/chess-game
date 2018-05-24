@@ -2,8 +2,10 @@ const BASE_URL = "http://localhost:3003";
 const USER_URL = BASE_URL + "/data/user";
 const LOGIN_URL = BASE_URL + "/login";
 const SIGNUP_URL = BASE_URL + "/signup";
+const CHANGEPASS_URL = BASE_URL + '/changepass'
 import axios from "axios";
 import store from "../store/store.js";
+import router from '../router/index'
 
 function signup(userInfo) {
   console.log("signup req sent");
@@ -19,16 +21,40 @@ function signup(userInfo) {
 function login(username, pass) {
   console.log("logging");
   return axios({
-    method: "post",
-    url: LOGIN_URL,
-    data: {
-      username,
-      pass
-    }
-  })
+      method: "post",
+      url: LOGIN_URL,
+      data: {
+        username,
+        pass
+      }
+    })
     .then(user => {
       console.log("login success", user.data);
-      store.commit("setUser", { username, pass });
+      store.commit("setUser", {
+        username,
+        pass
+      });
+      router.push('/')
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
+
+function changePass(username, oldPass, newPass) {
+  console.log("changing pass",username);
+  return axios({
+      method: "post",
+      url: CHANGEPASS_URL,
+      data: {
+        username,
+        oldPass,
+        newPass,
+      }
+    })
+    .then(user => {
+      console.log("change password success", user.data);
+      router.push('/')
     })
     .catch(err => {
       console.log(err);
@@ -37,5 +63,6 @@ function login(username, pass) {
 
 export default {
   signup,
-  login
+  login,
+  changePass
 };

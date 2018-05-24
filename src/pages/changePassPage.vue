@@ -1,24 +1,20 @@
 <template>
   <section>
-      <login-box :inputsInfo="changePass" :func="login"></login-box>
+      <change-pass-box v-if="isLoggedIn" :inputsInfo="changePassInputs" :func="changePass"></change-pass-box>
+      <p v-else>not logged in</p>
   </section>
 </template>
 
 <script>
-import loginBox from "../components/loginBox";
+import changePassBox from "../components/changePassBox";
 import userService from "../services/userService";
 export default {
   data() {
     return {
-      changePass: {
-        username: {
-          iconClass: "icon-user",
-          placeholder: "Username",
-          inputValue: ""
-        },
-        pass: {
+      changePassInputs: {
+        oldPass: {
           iconClass: "icon-shield",
-          placeholder: "Password",
+          placeholder: "Old Password",
           inputValue: ""
         },
         newPass: {
@@ -30,15 +26,20 @@ export default {
     };
   },
   components: {
-    loginBox
+    changePassBox
   },
   methods: {
-    login() {
-      console.log(this.loginInputs);
-      userService.login(
-        this.loginInputs.username.inputValue,
-        this.loginInputs.pass.inputValue
+    changePass() {
+      userService.changePass(
+        this.$store.state.user.user.username,
+        this.changePassInputs.oldPass.inputValue,
+        this.changePassInputs.newPass.inputValue
       );
+    }
+  },
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
     }
   }
 };

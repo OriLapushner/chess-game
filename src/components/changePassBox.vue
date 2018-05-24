@@ -1,11 +1,11 @@
 <template>
 <div class="container">
-  <h1>Login</h1>
+  <h1>Change Password</h1>
 
   <form class="form" action="javascript:void(0);" :method="func">
       <hr>
       <InputField v-for="inputInfo in inputsInfo" :inputInfo="inputInfo"/>
-      <button class="button" @click="func">Login</button>
+      <button class="button" @click="func">Change</button>
     </form>
     </div>
 </template>

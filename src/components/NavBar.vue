@@ -24,7 +24,6 @@ export default {
   name: "NavBar",
   computed: {
     isLoggedIn() {
-      console.log(this.$store.getters.isLoggedIn)
       return this.$store.getters.isLoggedIn;
     },
     signupText() {

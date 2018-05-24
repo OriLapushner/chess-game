@@ -2,7 +2,7 @@ import io from "socket.io-client"
 import store from "../store/store"
 import chessService from './chessService'
 import eventBus from './eventBus'
-
+// window.location.origin
 const connectSocket = () => {
   const socket = io("http://localhost:3003/");
   socket.on("gameFound", gameData => {

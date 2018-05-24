@@ -224,8 +224,7 @@ function moveFromTo(moveFrom, moveTo) {
   castlingHandler(moveFrom, moveTo, pieceToMove);
   playMoveSound();
   changePlayerTurn();
-  var isGameWon = checkGameWon();
-  if (isGameWon) console.log("congrats,", game.turn, "has lost");
+  setGameWinnerHandler();
   updateCastlingState(moveFrom, moveTo);
 }
 
@@ -278,10 +277,14 @@ function updateCastlingState(moveFrom, moveTo) {
 }
 function playMoveSound() {
   var moveSound = new Audio();
-  moveSound.src = "/src/sound/move-piece.wav";
+  moveSound.src = "src/sound/move-piece.wav";
   moveSound.play();
 }
-
+function setGameWinnerHandler(){
+  var isGameWon = checkGameWon();
+  var winner = game.turn === 'black' ? 'white' : 'black'
+  if (isGameWon) store.commit("setWinner",winner)
+}
 function checkGameWon() {
   // var colorToCheckFor = (game.turn === 'white' ? 'white' : 'black')
   var isMate = mateVerification(game.board, game.turn);
@@ -329,8 +332,10 @@ function sendMsg(text) {
 }
 
 function searchGameOnline() {
-  if (!socket) socket = connectSocket();
+  if (!socket) {
+  socket = connectSocket();
   socket.emit("searchGame");
+  }
 }
 
 export default {

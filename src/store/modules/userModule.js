@@ -17,12 +17,12 @@ export default {
         },
         navSignupRoute(state){
             if(state.user.username === '') return '/signup'
-            else return '/changePassword'
+            else return '/changepass'
         }
     },
     mutations: {
         setUser(state,user) {
-            console.log(user)
+            // console.log(user)
             state.user = user
         }
     },

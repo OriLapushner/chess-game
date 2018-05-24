@@ -70,7 +70,7 @@ At the start of the game, the position of the pieces is as follows.
 "use strict";
 export default {
   name: "RulesPage"
-};
+}
 </script>
 
 <style scoped>

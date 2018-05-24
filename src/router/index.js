@@ -38,10 +38,10 @@ export default new Router({
       name: 'MovesPage',
       component: MovesPage
     },
-    // {
-    // path: '/changepass',
-    // name: 'changePassPage',
-    // component: 'changePassPage'
-    // }    
+    {
+    path: '/changepass',
+    name: 'changePassPage',
+    component: changePassPage
+    }    
   ]
 })

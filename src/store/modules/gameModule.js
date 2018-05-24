@@ -22,13 +22,17 @@ export default {
     blackEaten: [],
     validMoves: [],
     messages: [],
-    isOnline: false
+    isOnline: false,
+    winner: null
   },
 
   getters: {},
   mutations: {
+    setWinner(state,winner){
+      state.winner = winner
+    },
     setCastling(state, { color, type, value }) {
-      console.log('color: ',color,'type: ',type,'value: ',value)
+      // console.log('color: ',color,'type: ',type,'value: ',value)
       state.castling[color][type] = value;
     },
     setBoard(state, board) {
