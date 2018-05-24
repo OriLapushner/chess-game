@@ -2,9 +2,10 @@ import io from "socket.io-client"
 import store from "../store/store"
 import chessService from './chessService'
 import eventBus from './eventBus'
-// window.location.origin
+window.location.origin
+// "http://localhost:3003/"
 const connectSocket = () => {
-  const socket = io("http://localhost:3003/");
+  const socket = io(window.location.origin);
   socket.on("gameFound", gameData => {
     // console.log('game has been found', gameData)
     store.commit("joinGame", gameData);
