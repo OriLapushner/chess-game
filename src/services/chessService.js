@@ -1,7 +1,6 @@
 import store from "../store/store.js";
 import piecesMoves from "./MovesService.js";
 import connectSocket from "./socketService.js";
-
 var socket = null;
 const game = store.state.game;
 function getNewBoard() {
@@ -178,7 +177,7 @@ function mateVerification(board, colorThreatened) {
       for (let g = 0; g < moves.length; g++) {
         // console.log(colorThreatened)
         if (board[moves[g]].piece === colorThreatened + "-king") {
-          console.log("piece threatening: ", board[coords].piece);
+          // console.log("piece threatening: ", board[coords].piece);
           return true;
         }
       }
@@ -191,9 +190,8 @@ function setSelected(square) {
   var coordsStr = piecesMoves.getCoordsStr(square.coords);
   store.commit("setSelected", coordsStr);
   var moves = getPossibleMoves(square, game.board);
-  console.log(moves);
   moves = removeMateMoves(moves, game.board, game.selected, game.turn);
-  console.log(moves);
+  // console.log(moves);
   store.commit("setValidMoves", moves);
 }
 
@@ -273,11 +271,12 @@ function updateCastlingState(moveFrom, moveTo) {
       value: false
     });
 
-  console.log("move from:", moveFrom, "move to", moveTo);
+  // console.log("move from:", moveFrom, "move to", moveTo);
 }
+var moveSound = new Audio();
+moveSound.src ="assets/move-piece.wav";
 function playMoveSound() {
-  var moveSound = new Audio();
-  moveSound.src = "src/sound/move-piece.wav";
+  // moveSound.src = "src/sound/move-piece.wav";
   moveSound.play();
 }
 function setGameWinnerHandler(){

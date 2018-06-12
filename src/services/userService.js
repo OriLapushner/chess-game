@@ -8,7 +8,7 @@ import store from "../store/store.js";
 import router from '../router/index'
 
 function signup(userInfo) {
-  console.log("signup req sent");
+  // console.log("signup req sent");
   return axios({
     method: "post",
     url: SIGNUP_URL,
@@ -19,7 +19,7 @@ function signup(userInfo) {
 }
 
 function login(username, pass) {
-  console.log("logging");
+  // console.log("logging");
   return axios({
       method: "post",
       url: LOGIN_URL,
@@ -42,7 +42,7 @@ function login(username, pass) {
 }
 
 function changePass(username, oldPass, newPass) {
-  console.log("changing pass",username);
+  // console.log("changing pass",username);
   return axios({
       method: "post",
       url: CHANGEPASS_URL,

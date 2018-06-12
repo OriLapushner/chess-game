@@ -26,6 +26,7 @@ export default {
     });
   },
   data() {
+    name:"ChatBox"
     return {
       msg: ""
     };
