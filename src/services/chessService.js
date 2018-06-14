@@ -1,6 +1,9 @@
 import store from "../store/store.js";
 import piecesMoves from "./MovesService.js";
 import connectSocket from "./socketService.js";
+import moveSoundSrc from '../sound/move-piece.wav'
+import imgs from './imgGetterService'
+
 var socket = null;
 const game = store.state.game;
 function getNewBoard() {
@@ -205,7 +208,7 @@ function addToEaten(coordsStr) {
 }
 
 function getImgUrl(piece) {
-  return "src/imgs/pieces/" + piece + ".png";
+  return imgs[piece];
 }
 
 function moveFromTo(moveFrom, moveTo) {
@@ -274,7 +277,7 @@ function updateCastlingState(moveFrom, moveTo) {
   // console.log("move from:", moveFrom, "move to", moveTo);
 }
 var moveSound = new Audio();
-moveSound.src ="assets/move-piece.wav";
+moveSound.src = moveSoundSrc;
 function playMoveSound() {
   // moveSound.src = "src/sound/move-piece.wav";
   moveSound.play();
