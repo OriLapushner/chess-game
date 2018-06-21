@@ -9,6 +9,7 @@ const connectSocket = () => {
   socket.on("gameFound", gameData => {
     // console.log('game has been found', gameData)
     store.commit("joinGame", gameData);
+    store.commit('setQue',false)
     socket.on("updateBoard", moveInfo => {
       // console.log('enemy player move info:', moveInfo)
       chessService.moveFromTo(moveInfo.moveFrom, moveInfo.moveTo);
