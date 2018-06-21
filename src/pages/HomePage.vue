@@ -21,7 +21,6 @@ import gameState from "../components/GameState";
 import chatBox from "../components/ChatBox";
 export default {
   name: "HomePage",
-  created() {},
   computed: {
     isOnline() {
       return this.$store.state.game.isOnline;
@@ -31,6 +30,7 @@ export default {
     startGame() {
       if (this.$store.state.game.turn === null)
         this.$store.commit("setPlayerTurn", "white");
+        this.$store.commit('setQue',false)
     },
     searchGameOnline() {
       chessService.searchGameOnline();

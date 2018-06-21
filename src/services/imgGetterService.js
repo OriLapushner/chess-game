@@ -10,6 +10,12 @@ import whiteBishop from '../imgs/pieces/white-bishop.png'
 import whiteQueen from '../imgs/pieces/white-queen.png'
 import whiteRook from '../imgs/pieces/white-rook.png'
 import whiteKing from '../imgs/pieces/white-king.png'
+import pawnMoves from '../imgs/moves/pawn-moves.png'
+import knightMoves from '../imgs/moves/knight-moves.png'
+import bishopMoves from '../imgs/moves/bishop-moves.png'
+import queenMoves from '../imgs/moves/queen-moves.png'
+import rookMoves from '../imgs/moves/rook-moves.png'
+import kingMoves from '../imgs/moves/king-moves.png'
 
 var imgs = {
   'black-pawn': blackPawn,
@@ -23,7 +29,13 @@ var imgs = {
   'white-bishop':whiteBishop,
   'white-queen':whiteQueen,
   'white-rook':whiteRook,
-  'white-king':whiteKing
+  'white-king':whiteKing,
+  pawnMoves,
+  knightMoves,
+  bishopMoves,
+  queenMoves,
+  rookMoves,
+  kingMoves
 }
 
 export default imgs

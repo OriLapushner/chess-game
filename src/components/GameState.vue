@@ -29,7 +29,8 @@ export default {
       return this.$store.state.game.blackEaten;
     },
     gameMsg() {
-      if(this.$store.state.game.winner) return this.$store.state.game.winner + ' has won'
+      if(this.$store.state.game.isQued) return 'qued for game'
+      else if(this.$store.state.game.winner) return this.$store.state.game.winner + ' has won'
       else if (this.$store.state.game.turn === null) return "";
       else if (this.$store.state.game.playerColor) {
         if (this.$store.state.game.turn === this.$store.state.game.playerColor)

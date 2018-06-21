@@ -26,10 +26,6 @@ function getNewBoard() {
   }
   return board;
 }
-// var deaultLocations = {
-//     [0,7] : 'white-rook',
-//     [0,6] : 'white-knigt'
-// }
 function getPieceLoc(i, j) {
   var piece;
   if (i === 0) {
@@ -338,6 +334,7 @@ function searchGameOnline() {
   socket = connectSocket();
   socket.emit("searchGame");
   }
+  store.commit('setQue',true)
 }
 
 export default {

@@ -17,17 +17,20 @@ export default {
     turn: null,
     playerColor: null,
     selected: null,
-    mateFor: null,
     whiteEaten: [],
     blackEaten: [],
     validMoves: [],
     messages: [],
     isOnline: false,
-    winner: null
+    winner: null,
+    isQued: false
   },
 
   getters: {},
   mutations: {
+    setQue(state,isQued){
+      state.isQued = isQued
+    },
     setWinner(state,winner){
       state.winner = winner
     },
