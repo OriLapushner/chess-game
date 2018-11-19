@@ -26,7 +26,7 @@ export default {
     });
   },
   data() {
-    name:"ChatBox"
+    name: "ChatBox";
     return {
       msg: ""
     };
@@ -98,5 +98,11 @@ input {
   display: flex;
   flex-direction: column-reverse;
   width: 250px;
+}
+@media (max-width: 370px) {
+  .box-container {
+    width: 220px;
+    height: 200px;
+  }
 }
 </style>

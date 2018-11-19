@@ -37,7 +37,6 @@ var imgs = {
   rookMoves,
   kingMoves
 }
-
 export default imgs
 
 
